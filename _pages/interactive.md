@@ -15,6 +15,15 @@ precomputed images.
 <div class="col-md-4 mb-4">
 <div class="card h-100">
 <div class="card-body">
+<h5 class="card-title"><a href="{{ '/interactive/4dstem/' | relative_url }}">4D-STEM diffraction</a></h5>
+<p class="card-text">Drag the probe across a polycrystalline sample and watch the diffraction pattern change, from nanobeam
+diffraction to ptychographic imaging conditions.</p>
+</div>
+</div>
+</div>
+<div class="col-md-4 mb-4">
+<div class="card h-100">
+<div class="card-body">
 <h5 class="card-title"><a href="{{ '/interactive/ptychography/' | relative_url }}">Multislice ptychography</a></h5>
 <p class="card-text">Scan an electron probe over a nanoparticle, record a 4D-STEM dataset, and watch gradient descent reconstruct the
 sample slice by slice.</p>
@@ -26,20 +35,8 @@ sample slice by slice.</p>
 <div class="card-body">
 <h5 class="card-title"><a href="{{ '/interactive/lorentz/' | relative_url }}">Lorentz TEM of skyrmions</a></h5>
 <p class="card-text">Build a magnetic texture, see how it shifts the phase of the electron beam, image it out of focus, and reconstruct the
-magnetic field with the transport-of-intensity equation.</p>
-</div>
-</div>
-</div>
-<div class="col-md-4 mb-4">
-<div class="card h-100">
-<div class="card-body">
-<h5 class="card-title"><a href="{{ '/interactive/4dstem/' | relative_url }}">4D-STEM diffraction</a></h5>
-<p class="card-text">Drag the probe across a polycrystalline sample and watch the diffraction pattern change, from nanobeam
-diffraction to ptychographic imaging conditions.</p>
+magnetic induction with the transport-of-intensity equation.</p>
 </div>
 </div>
 </div>
 </div>
-
-The ptychography and 4D-STEM demos were created by [Colin Ophus](https://colab.stanford.edu) for the
-[Ophus Lab website](https://colab.stanford.edu/interactive), which has more like them.

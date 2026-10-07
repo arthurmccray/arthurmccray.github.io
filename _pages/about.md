@@ -28,11 +28,16 @@ latest_posts:
 
 I'm a research scientist working at the intersection of **machine learning and electron microscopy**. I build self-supervised and
 physics-informed methods for inverse problems in scientific imaging, including deep generative priors, implicit neural representations, and
-differentiable forward models. Then I ship them as open-source tools that other microscopists can use.
+differentiable forward models, and increasingly large pretrained models for materials data. Then I ship them as open-source tools that other
+microscopists can use.
 
-I'm currently a postdoctoral scholar in [Colin Ophus](https://colab.stanford.edu)'s group at Stanford University, after starting with the
-group at the National Center for Electron Microscopy at Berkeley Lab. There, I developed a self-supervised deep-prior framework for (S)TEM
-inverse problems. Applied to electron ptychography, it gives reconstructions more than 10× faster and with 40% higher resolution than
+**Right now** I'm building [deep material priors]({{ '/projects/0_deep_material_priors/' | relative_url }}): **multimodal vision
+transformer foundation models** for electron microscopy, pretrained at scale on simulated diffraction data together with crystal structure
+and composition. This is a $1.2M program with the Toyota Research Institute, and I led the technical contributions behind the award.
+
+I'm a postdoctoral scholar in [Colin Ophus](https://colab.stanford.edu)'s group at Stanford University, after starting with the group at the
+National Center for Electron Microscopy at Berkeley Lab. There, I developed a self-supervised deep-prior framework for (S)TEM inverse
+problems. Applied to electron ptychography, it gives reconstructions more than 10× faster and with 40% higher resolution than
 state-of-the-art baselines, and it now underpins projects in ptychography, tomography, and crystallography. I also lead the ptychography and
 machine-learning development of [quantEM](https://github.com/electronmicroscopy/quantem), an open-source library for quantitative electron
 microscopy.

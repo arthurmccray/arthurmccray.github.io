@@ -7,4 +7,4 @@ github_username: arthurmccray # your GitHub user name
 linkedin_username: arthur-mccray-6200a9ab # your LinkedIn user name
 orcid_id: 0000-0001-6077-4698 # your ORCID ID
 cv_pdf: /assets/pdf/McCray_CV.pdf # path to your CV PDF file
-rss_icon: true # comment this line to hide the RSS icon
+# rss_icon: true # uncomment to show the RSS icon

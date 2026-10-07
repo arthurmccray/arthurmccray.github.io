@@ -11,7 +11,7 @@ I care about turning research methods into tools that other people can actually 
 
 <div class="row mt-4">
 <div class="col-md-4 mb-3">
-<img class="img-fluid" src="{{ '/assets/img/projects/quantem_logo.png' | relative_url }}" alt="quantEM logo">
+<img class="img-fluid rounded" style="background: #fff; padding: 0.5rem" src="{{ '/assets/img/projects/quantem_logo.png' | relative_url }}" alt="quantEM logo">
 </div>
 <div class="col-md-8" markdown="1">
 
@@ -31,7 +31,7 @@ and contributed much of the core infrastructure: data structures, visualization,
 
 <div class="row mt-4">
 <div class="col-md-4 mb-3">
-<img class="img-fluid" src="{{ '/assets/img/projects/skyrmion_bmap.jpg' | relative_url }}" alt="Magnetic induction map of a skyrmion lattice">
+<img class="img-fluid rounded" style="background: #fff; padding: 0.5rem" src="{{ '/assets/img/projects/pylorentz_logo.png' | relative_url }}" alt="PyLorentz logo">
 </div>
 <div class="col-md-8" markdown="1">
 
@@ -50,33 +50,21 @@ spin textures.
 
 ---
 
-{% if site.data.repositories.github_users %}
-
-## GitHub users
-
-<div class="repositories d-flex flex-wrap flex-md-row flex-column justify-content-between align-items-center">
-  {% for user in site.data.repositories.github_users %}
-    {% include repository/repo_user.liquid username=user %}
-  {% endfor %}
-</div>
-
----
-
-{% if site.repo_trophies.enabled %}
+{% comment %}
+GitHub stats card written out here (instead of the theme's repo_user include) so the card can hide the rank grade.
+{% endcomment %}
+{% assign stats_url = site.external_services.github_readme_stats_url | default: 'https://github-stats-extended.vercel.app' %}
 {% for user in site.data.repositories.github_users %}
-{% if site.data.repositories.github_users.size > 1 %}
 
-  <h4>{{ user }}</h4>
-  {% endif %}
-  <div class="repositories d-flex flex-wrap flex-md-row flex-column justify-content-between align-items-center">
-  {% include repository/repo_trophies.liquid username=user %}
-  </div>
-
----
-
+<div class="repositories d-flex justify-content-center">
+<div class="repo p-2 text-center">
+<a href="https://github.com/{{ user }}">
+<img class="only-light w-100" alt="{{ user }} GitHub stats" src="{{ stats_url }}/api/?username={{ user }}&theme={{ site.repo_theme_light }}&show_icons=true&hide_rank=true" onerror="this.closest('.repo').style.display='none'">
+<img class="only-dark w-100" alt="{{ user }} GitHub stats" src="{{ stats_url }}/api/?username={{ user }}&theme={{ site.repo_theme_dark }}&show_icons=true&hide_rank=true" onerror="this.closest('.repo').style.display='none'">
+</a>
+</div>
+</div>
 {% endfor %}
-{% endif %}
-{% endif %}
 
 {% if site.data.repositories.github_repos %}
 

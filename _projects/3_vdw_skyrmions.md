@@ -1,24 +1,57 @@
 ---
 layout: page
 title: Skyrmions in van der Waals magnets
-description: Cryogenic and in-situ Lorentz TEM of topological spin textures in 2D magnets.
+description: Cryogenic and in situ Lorentz TEM of topological spin textures in 2D magnets.
+img: assets/img/projects/cgt_bubble_chirality.jpg
 importance: 3
 category: research
-related_publications: true
 ---
 
-Layered van der Waals ferromagnets like Fe₃GeTe₂ and Cr₂Ge₂Te₆ host magnetic skyrmions and bubbles, which are topologically protected
-spin textures, and they can be exfoliated, stacked, and strained in ways bulk magnets cannot. During my Ph.D. at Northwestern and Argonne I
-used cryogenic (LN₂ and LHe) and in-situ Lorentz TEM to study how these textures form, order, and respond to temperature, field, and strain.
+<p class="lead"><strong>Papers:</strong>
+<a href="https://doi.org/10.1021/acs.nanolett.2c02275">Thermal hysteresis and ordering behavior of magnetic skyrmion lattices</a>,
+<em>Nano Letters</em> (2022) ·
+<a href="https://doi.org/10.1002/adfm.202214203">Direct observation of magnetic bubble lattices and magnetoelastic effects in van der Waals Cr₂Ge₂Te₆</a>,
+<em>Advanced Functional Materials</em> (2023)</p>
 
-Highlights include the thermal hysteresis and ordering behavior of skyrmion lattices, the direct observation of magnetic bubble lattices
-and magnetoelastic effects in Cr₂Ge₂Te₆, and collaborations imaging twisted stacking domains in CrI₃ and spin textures in insulating vdW
-ferromagnets.
+Layered van der Waals ferromagnets like Fe₃GeTe₂ (FGT) and Cr₂Ge₂Te₆ (CGT) host magnetic skyrmions and bubbles, which are topologically
+protected spin textures, and they can be exfoliated, stacked, and strained in ways bulk magnets cannot. Most of them order only below room
+temperature, so during my Ph.D. at Northwestern and Argonne I used cryogenic (LN₂ and LHe) and in situ Lorentz TEM to watch these textures
+form, order, and respond to temperature, field, and strain.
 
-{% bibliography --cited_in_order --query @*[key=mccray2022thermal] %}
+## Néel skyrmion lattices in Fe₃GeTe₂
 
-{% bibliography --cited_in_order --query @*[key=mccray2023direct] %}
+FGT hosts Néel skyrmions, which only produce Lorentz contrast when the sample is tilted. Because skyrmion size in FGT depends strongly on
+temperature, field-cooling forces the lattice to adapt as it forms. Combining LTEM with CNN-based skyrmion detection, we tracked lattice order
+and skyrmion size across field-cooling and field-heating cycles, which show a pronounced thermal hysteresis. Combining these statistics with
+an analytical model of FGT's magnetic energy landscape explains how field and temperature control the lattice.
 
-{% bibliography --cited_in_order --query @*[key=jang2024direct] %}
+<div class="row justify-content-sm-center">
+<div class="col-sm-11 mt-3 mt-md-0">
+{% include figure.liquid loading="eager" path="assets/img/projects/fgt_skyrmions.jpg" class="img-fluid rounded" zoomable=true %}
+</div>
+</div>
+<div class="caption">
+Néel skyrmions in Fe₃GeTe₂. (a) In-focus image of the flake. (b–d) Tilted, out-of-focus LTEM images during field-cooling, showing the
+skyrmion lattice forming. (e, f) Magnified region and its reconstructed in-plane magnetic induction.
+</div>
 
-{% bibliography --cited_in_order --query @*[key=grebenchuk2024topological] %}
+## Bubble lattices and magnetostriction in Cr₂Ge₂Te₆
+
+In CGT, field-cooling produces lattices of magnetic bubbles, which can be either homochiral or of mixed chirality after identical cooling
+procedures in the same region of the flake. CGT's large thermal expansion on cooling also let us directly observe magnetoelastic coupling:
+strain in the flake aligns the stripe domains.
+
+<div class="row justify-content-sm-center">
+<div class="col-sm-11 mt-3 mt-md-0">
+{% include figure.liquid loading="eager" path="assets/img/projects/cgt_bubble_chirality.jpg" class="img-fluid rounded" zoomable=true %}
+</div>
+</div>
+<div class="caption">
+Magnetic bubbles of different chirality in a CGT flake. (a, b) TIE-reconstructed phase images of the same region after two identical
+field-cooling procedures, giving a homochiral lattice in one case and a mixed-chirality lattice in the other. (c, d) Integrated magnetic
+induction maps of the boxed regions, with chirality indicated by the arrows.
+</div>
+
+I also contributed imaging to collaborations on twisted stacking domains in CrI₃
+([Nature Communications, 2024](https://doi.org/10.1038/s41467-024-50314-z)) and spin textures in an insulating vdW ferromagnet
+([Advanced Materials, 2024](https://doi.org/10.1002/adma.202311949)).

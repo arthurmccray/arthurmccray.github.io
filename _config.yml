@@ -4,16 +4,16 @@
 
 title: blank # the website title (if blank, full name will be used instead)
 first_name: Arthur
-middle_name:
+middle_name: R. C.
 last_name: McCray
 contact_note: >
   Email is the best way to reach me.
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Arthur McCray — postdoctoral scholar at Stanford University working on machine learning for inverse problems in electron microscopy.
+  Arthur R. C. McCray — postdoctoral scholar at Stanford University building machine learning for electron microscopy, from physics-informed inverse problem solvers to multimodal vision transformer foundation models.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with the <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
-keywords: electron microscopy, machine learning, ptychography, Lorentz TEM, 4D-STEM, inverse problems, quantEM, PyLorentz # add your own keywords or leave empty
+keywords: electron microscopy, machine learning, vision transformers, multimodal foundation models, deep generative priors, self-supervised learning, ptychography, Lorentz TEM, 4D-STEM, inverse problems, quantEM, PyLorentz # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: 🔬 # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 apple_touch_icon: # image name in /assets/img/ (or a rooted path / absolute URL) used for iOS home-screen bookmarks; needs a real 180x180 PNG, since Safari ignores the emoji favicon above. Left empty, iOS falls back to a screenshot of the page.
@@ -220,6 +220,8 @@ exclude:
   - docker-compose-slim.yml
   - docs/
   - inbox/
+  - "*.stackdump"
+  - bash.exe.stackdump
   - Gemfile
   - Gemfile.lock
   - LICENSE

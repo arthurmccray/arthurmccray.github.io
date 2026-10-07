@@ -1,5 +1,5 @@
 // Ported from the Ophus Lab website (https://colab.stanford.edu, github.com/ophusgroup/landing).
-// Original widget by Colin Ophus; used here with credit. Unmodified apart from this header.
+// Original widget by Colin Ophus; used here with credit. Modified only to add the live loss plot (search "loss plot").
 
 // ptycho-ms.js — interactive multislice electron ptychography demo (MyST anywidget).
 //
@@ -286,6 +286,7 @@ function render({ model, el }) {
     .${id}-slider { flex: 1; min-width: 70px; accent-color: var(--accent); }
     .${id}-lab { font-size: 12px; color: var(--dim); white-space: nowrap; min-width: 52px; }
     .${id}-stat { font-size: 13px; color: var(--dim); font-variant-numeric: tabular-nums; margin-left: 4px; }
+    .${id}-loss { display: block; width: 100%; height: 104px; margin-top: 4px; } /* loss plot */
     @media (pointer: coarse) {
       .${id}-panel canvas { touch-action: pan-y; } /* vertical swipe scrolls the page; horizontal drag moves the probe */
     }
@@ -350,6 +351,7 @@ function render({ model, el }) {
           <button class="${id}-btn ${id}-rst">Reset</button>
           <span class="${id}-stat ${id}-stat1">iteration 0</span>
         </div>
+        <canvas class="${id}-loss" width="${SW}" height="208"></canvas>
       </div>
     </div>
   </div>`;
@@ -364,6 +366,7 @@ function render({ model, el }) {
   const angSlider = el.querySelector(`.${id}-ang`), angLab = el.querySelector(`.${id}-angl`);
   const dsSlider = el.querySelector(`.${id}-dss`), dsLab = el.querySelector(`.${id}-dssl`);
   const statEl = el.querySelector(`.${id}-stat1`);
+  const lossCv = el.querySelector(`.${id}-loss`), lossCtx = lossCv.getContext("2d");
 
   // ---- theme -----------------------------------------------------------------
   function detectDark() {
@@ -508,11 +511,12 @@ function render({ model, el }) {
   if (!gcOld) globalThis.__pmsCache = { key: CACHE_KEY, baseKey: BASE_KEY, ampsClean, ampsUse, ORe, OIm, mRe, mIm, vRe, vIm,
     meta: { iter: 0, adamT: 0, init: false, df: DF, alpha: ALPHA, doseIdx } };
   const cacheMeta = globalThis.__pmsCache.meta;
+  if (!cacheMeta.lossHist) cacheMeta.lossHist = []; // loss plot: data error per iteration
   let iter = cacheMeta.iter, adamT = cacheMeta.adamT, relErr = NaN;
   function resetRecon() {
     ORe.fill(1); OIm.fill(0); mRe.fill(0); mIm.fill(0); vRe.fill(0); vIm.fill(0); gRe.fill(0); gIm.fill(0);
     iter = 0; adamT = 0; relErr = NaN; batchK = 0;
-    cacheMeta.iter = 0; cacheMeta.adamT = 0; cacheMeta.init = true;
+    cacheMeta.iter = 0; cacheMeta.adamT = 0; cacheMeta.init = true; cacheMeta.lossHist = [];
     paintRecon(); paintXZ(); paintDPRight(); updateStat();
   }
   resetRecon.later = true;
@@ -946,6 +950,34 @@ function render({ model, el }) {
 
   function updateStat() {
     statEl.textContent = `iteration ${iter}/${MAX_ITER}` + (isFinite(relErr) ? ` · data error ${(100 * relErr).toFixed(1)}%` : "");
+    drawLoss();
+  }
+  // ---- loss plot: data error vs iteration, x fixed to [0, MAX_ITER], y rescales to the data ----
+  function drawLoss() {
+    const W = lossCv.width, H = lossCv.height, c = lossCtx, hist = cacheMeta.lossHist || [];
+    const dim = dark ? "#9aa" : "#666", line = dark ? "#2c2c2c" : "#d8d8d8";
+    const green = dark ? "#00d878" : "#0a8a50";
+    const L = 92, R = 16, T = 18, B = 52, pw = W - L - R, ph = H - T - B;
+    c.clearRect(0, 0, W, H);
+    let ymax = 0;
+    for (const v of hist) if (v > ymax) ymax = v;
+    ymax = ymax > 0 ? ymax * 1.08 : 1;
+    const X = (i) => L + (i / MAX_ITER) * pw, Y = (v) => T + ph * (1 - v / ymax);
+    c.strokeStyle = line; c.lineWidth = 2;
+    c.strokeRect(L, T, pw, ph);
+    c.fillStyle = dim; c.font = "20px ui-sans-serif, system-ui, sans-serif";
+    c.textAlign = "center"; c.textBaseline = "top";
+    for (const t of [0, 10, 20, 30, 40, 50].filter((t) => t <= MAX_ITER)) c.fillText(String(t), X(t), T + ph + 6);
+    c.textBaseline = "bottom"; c.fillText("iteration", L + pw / 2, H - 1);
+    c.textAlign = "right"; c.textBaseline = "middle";
+    if (hist.length) { c.fillText(`${(100 * ymax).toFixed(0)}%`, L - 8, T + 2); c.fillText("0", L - 8, T + ph); }
+    c.save(); c.translate(22, T + ph / 2); c.rotate(-Math.PI / 2); c.textAlign = "center"; c.fillText("data error", 0, 0); c.restore();
+    if (!hist.length) return;
+    c.strokeStyle = green; c.lineWidth = 3; c.beginPath();
+    hist.forEach((v, i) => { const x = X(i + 1), y = Y(v); if (i) c.lineTo(x, y); else c.moveTo(x, y); });
+    c.stroke();
+    c.fillStyle = green;
+    const k = hist.length - 1; c.beginPath(); c.arc(X(k + 1), Y(hist[k]), 5, 0, 2 * Math.PI); c.fill();
   }
   function paintAll() {
     buildTexL(); buildTexR();
@@ -1085,6 +1117,7 @@ function render({ model, el }) {
         adamStep(1 / BATCH);
         iter++;
         relErr = Math.sqrt(batchNum / Math.max(batchDen, 1e-12));
+        cacheMeta.lossHist.push(relErr); // loss plot
         batchK = 0; batchNum = 0; batchDen = 0;
         paintRecon(); paintXZ(); updateStat();
         if (iter % 3 === 0) paintDPRight();
@@ -1121,7 +1154,7 @@ function render({ model, el }) {
   function restartSim() { // defocus/angle changed: rebuild the dataset (on slider release)
     stopRecon(); if (scanning) stopScan();
     ready = false; simDone = 0;
-    cacheMeta.init = false; cacheMeta.iter = 0; cacheMeta.adamT = 0; cacheMeta.df = DF; cacheMeta.alpha = ALPHA;
+    cacheMeta.init = false; cacheMeta.iter = 0; cacheMeta.adamT = 0; cacheMeta.df = DF; cacheMeta.alpha = ALPHA; cacheMeta.lossHist = [];
     globalThis.__pmsCache.key = keyFor(DF, ALPHA);
     loadEl.style.display = ""; loadBar.style.width = "0%";
     clearTimeout(simTimer); simTimer = setTimeout(simChunk, 20);
@@ -1179,6 +1212,7 @@ function render({ model, el }) {
         adamStep(1 / BATCH);
         iter++;
         relErr = Math.sqrt(num / Math.max(den, 1e-12));
+        cacheMeta.lossHist.push(relErr); // loss plot
       }
       paintRecon(); paintXZ(); paintDPRight(); updateStat();
       return { iter, relErr, ms_per_iter: (performance.now() - t0) / n };

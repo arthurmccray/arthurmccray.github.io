@@ -1,9 +1,9 @@
 // ltem-sim.js — interactive Lorentz TEM demo (anywidget-style ES module: `export default { render({ model, el }) }`).
 //
 // Pipeline (all live in the browser on a 256 x 256 grid, uniform magnetization through the film thickness):
-//   1. Build a magnetization texture m(x, y) (skyrmion, antiskyrmion, skyrmion lattice, vortex, helix).
-//   2. Tilt the sample about the x axis: the beam sees m_y cos(a) + m_z sin(a) as the in-plane y component.
-//   3. Magnetic phase via the Mansuroglu / Beleggia Fourier method (as in PyLorentz):
+//   1. Build a magnetization texture m(x, y) (skyrmion, antiskyrmion, skyrmion lattice, helix).
+//   2. Tilt the sample about the x axis: the beam sees m_y cos(a) - m_z sin(a) as the in-plane y component.
+//   3. Magnetic phase via the Mansuripur Fourier-space algorithm (as in PyLorentz):
 //        phi(k) = i * pi * B0 * t / Phi0 * (m_x k_y - m_y k_x) / k^2
 //   4. Fresnel images at +/- defocus: I = |F^-1[ F[exp(i phi)] * exp(-i pi lambda df k^2) * E(k) ]|^2, plus shot noise.
 //   5. Transport-of-intensity (TIE) reconstruction of the phase from the +/- defocus pair, shown as an induction map.
@@ -16,7 +16,7 @@
 const N = 256; // grid size (pixels)
 const DX = 2e-9; // pixel size (m)
 const PHI0 = 2.067833848e-15; // magnetic flux quantum h/2e (T m^2)
-const B0 = 0.3; // saturation induction mu0 * Ms (T)
+const B0 = 0.2; // saturation induction mu0 * Ms (T)
 const THICKNESS = 40e-9; // film thickness (m)
 const LAMBDA = 2.508e-12; // electron wavelength at 200 kV (m)
 const THETA_C = 5e-6; // beam divergence (rad), damps high frequencies at large defocus
@@ -157,15 +157,6 @@ export function makeTexture(opts) {
         // Outside the patch the nearest site is far away and the profile decays to the uniform background.
         theta = skTheta(r, radius, w);
         phi = Math.atan2(y - by, x - bx) + helicity;
-      } else if (texture === "vortex") {
-        const dx = x - cx;
-        const dy = y - cy;
-        const r = Math.hypot(dx, dy);
-        const Rd = Math.max(radius * 3, 60e-9);
-        if (r > Rd) continue; // nonmagnetic outside the disk
-        const rc = 10e-9; // vortex core radius
-        theta = Math.PI / 2 - (Math.PI / 2) * Math.exp(-(r * r) / (rc * rc)); // core points up
-        phi = Math.atan2(dy, dx) + helicity;
       } else if (texture === "helix") {
         // Bloch-type helix propagating along x, snapped to a commensurate period.
         const period = L / Math.max(1, Math.round(L / (radius * 3)));
@@ -198,7 +189,7 @@ export function magneticPhase(m, tilt = 0) {
   const bim = new Float64Array(N * N);
   for (let i = 0; i < N * N; i++) {
     are[i] = m.mx[i];
-    bre[i] = m.my[i] * ct + m.mz[i] * st;
+    bre[i] = m.my[i] * ct - m.mz[i] * st; // PyLorentz convention for a counterclockwise tilt about x
   }
   fft2(are, aim);
   fft2(bre, bim);
@@ -270,19 +261,32 @@ function mulberry32(seed) {
   };
 }
 
-/** Add shot noise for `dose` electrons per pixel (Gaussian approximation to Poisson). Infinite dose = no noise. */
+/**
+ * Add shot noise for `dose` electrons per pixel: exact Poisson sampling at low counts, Gaussian approximation above.
+ * Returns intensity in the same units as I (counts / dose). Infinite dose = no noise.
+ */
 export function addNoise(I, dose, seed = 1) {
   if (!isFinite(dose)) return I;
   const rand = mulberry32(seed);
   const out = new Float64Array(I.length);
-  for (let i = 0; i < I.length; i += 2) {
-    const u1 = Math.max(rand(), 1e-12);
-    const u2 = rand();
-    const r = Math.sqrt(-2 * Math.log(u1));
-    const g0 = r * Math.cos(2 * Math.PI * u2);
-    const g1 = r * Math.sin(2 * Math.PI * u2);
-    out[i] = Math.max(0, I[i] + g0 * Math.sqrt(Math.max(I[i], 0) / dose));
-    if (i + 1 < I.length) out[i + 1] = Math.max(0, I[i + 1] + g1 * Math.sqrt(Math.max(I[i + 1], 0) / dose));
+  for (let i = 0; i < I.length; i++) {
+    const lam = Math.max(I[i], 0) * dose;
+    let n;
+    if (lam < 30) {
+      // Knuth's multiplication method
+      const L = Math.exp(-lam);
+      let prod = rand();
+      n = 0;
+      while (prod > L) {
+        n++;
+        prod *= rand();
+      }
+    } else {
+      const u1 = Math.max(rand(), 1e-12);
+      const u2 = rand();
+      n = Math.max(0, lam + Math.sqrt(lam) * Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2));
+    }
+    out[i] = n / dose;
   }
   return out;
 }
@@ -448,11 +452,48 @@ function drawColorWheel(ctx, x0, y0, r, mode) {
       const d = Math.hypot(dx, dy) / r;
       if (d > 1) continue;
       const h = hueOf(dx, dy);
-      const rgb = mode === "hsl" ? hsl2rgb(h, 1, 0.5) : hsv2rgb(h, 1, d);
+      // hsl: radius maps to the polar angle (center = up/white, mid-ring = in-plane, rim = down/black)
+      const rgb = mode === "hsl" ? hsl2rgb(h, 1, (1 + Math.cos(Math.PI * d)) / 2) : hsv2rgb(h, 1, d);
       img.data.set([rgb[0], rgb[1], rgb[2], 255], 4 * (j * 2 * r + i));
     }
   }
   ctx.putImageData(img, x0 - r, y0 - r);
+}
+
+function drawArrows(ctx, m, step = 11) {
+  ctx.save();
+  ctx.lineCap = "round";
+  const start = Math.floor(step / 2);
+  for (let iy = start; iy < N; iy += step) {
+    for (let ix = start; ix < N; ix += step) {
+      const p = iy * N + ix;
+      const ip = Math.hypot(m.mx[p], m.my[p]);
+      if (ip < 0.15) continue;
+      const len = 0.48 * step * ip;
+      const ux = m.mx[p] / ip;
+      const uy = m.my[p] / ip;
+      const x0 = ix - ux * len;
+      const y0 = iy - uy * len;
+      const x1 = ix + ux * len;
+      const y1 = iy + uy * len;
+      const hs = 2.2 + 1.8 * ip;
+      for (const [color, width] of [
+        ["rgba(255,255,255,0.85)", 2.6],
+        ["rgba(0,0,0,0.9)", 1.1],
+      ]) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.moveTo(x1 - ux * hs - uy * hs * 0.7, y1 - uy * hs + ux * hs * 0.7);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x1 - ux * hs + uy * hs * 0.7, y1 - uy * hs - ux * hs * 0.7);
+        ctx.stroke();
+      }
+    }
+  }
+  ctx.restore();
 }
 
 // ---------------------------------------------------------------------------
@@ -462,7 +503,6 @@ const TEXTURES = [
   ["skyrmion", "Skyrmion"],
   ["lattice", "Skyrmion lattice"],
   ["antiskyrmion", "Antiskyrmion"],
-  ["vortex", "Vortex (disk)"],
   ["helix", "Helical stripes"],
 ];
 
@@ -478,6 +518,7 @@ const CSS = `
 .ltem-buttons button { font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 4px; cursor: pointer;
   border: 1px solid var(--global-theme-color, #2698ba); background: transparent; color: var(--global-theme-color, #2698ba); }
 .ltem-buttons button:hover { background: var(--global-theme-color, #2698ba); color: #fff; }
+.ltem-buttons label.ltem-check { flex-direction: row; align-items: center; gap: 0.3rem; font-size: 0.8rem; cursor: pointer; }
 .ltem-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; }
 @media (min-width: 1100px) { .ltem-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .ltem-panel canvas { width: 100%; aspect-ratio: 1; display: block; border-radius: 4px; touch-action: none; }
@@ -504,16 +545,21 @@ function render({ model, el }) {
     document.head.appendChild(style);
   }
 
-  const state = {
-    texture: opt("texture", "skyrmion"),
-    radius: 60e-9,
-    helicity: Math.PI / 2,
-    tilt: 0,
-    defocus: 0.5e-3,
-    logDose: 5, // 5 = noise-free
-    cx: 0,
-    cy: 0,
-  };
+  const DEFAULT_RADIUS = { skyrmion: 60e-9, antiskyrmion: 60e-9, lattice: 30e-9, helix: 60e-9 };
+  const NOISE_FREE = 5; // top of the log-dose slider
+  const state = { texture: opt("texture", "skyrmion"), arrows: false };
+  function resetState() {
+    Object.assign(state, {
+      radius: DEFAULT_RADIUS[state.texture] || 60e-9,
+      helicity: Math.PI / 2,
+      tilt: 0,
+      defocus: 500e-6,
+      logDose: NOISE_FREE,
+      cx: 0,
+      cy: 0,
+    });
+  }
+  resetState();
 
   const root = document.createElement("div");
   root.className = "ltem";
@@ -532,22 +578,23 @@ function render({ model, el }) {
         <input type="range" data-k="tilt" min="-35" max="35" step="1">
       </label>
       <label>Defocus Δf <span class="ltem-val" data-v="defocus"></span>
-        <input type="range" data-k="defocus" min="-2" max="2" step="0.05">
+        <input type="range" data-k="defocus" min="-2000" max="2000" step="25">
       </label>
       <label>Electron dose <span class="ltem-val" data-v="logDose"></span>
-        <input type="range" data-k="logDose" min="1" max="5" step="0.1">
+        <input type="range" data-k="logDose" min="-1" max="5" step="0.1">
       </label>
       <div class="ltem-buttons">
         <button data-preset="bloch" title="γ = 90°: in-plane spins circulate around the core">Bloch</button>
         <button data-preset="neel" title="γ = 0°: in-plane spins point radially outward">Néel</button>
-        <button data-preset="center">Recenter</button>
+        <button data-preset="reset" title="Restore the default settings for this texture">Reset</button>
+        <label class="ltem-check"><input type="checkbox" data-k="arrows"> Arrows</label>
       </div>
     </div>
     <div class="ltem-grid">
       <div class="ltem-panel"><canvas data-c="m" class="ltem-drag" width="${N}" height="${N}"></canvas>
-        <div class="ltem-cap"><b>Magnetization</b>Color: in-plane direction. White/black: pointing up/down. Drag to move.</div></div>
+        <div class="ltem-cap"><b>Magnetization</b>Color: in-plane direction. White/black: pointing up/down (out of plane). Drag to move.</div></div>
       <div class="ltem-panel"><canvas data-c="phase" width="${N}" height="${N}"></canvas>
-        <div class="ltem-cap"><b>Electron phase shift</b>What the electron wave picks up passing through the film. Not directly visible.</div></div>
+        <div class="ltem-cap"><b>Electron phase shift</b>What the electron wave picks up passing through the film. Not directly visible. Fixed color scale per texture.</div></div>
       <div class="ltem-panel"><canvas data-c="img" class="ltem-drag" width="${N}" height="${N}"></canvas>
         <div class="ltem-cap"><b>Lorentz TEM image</b>Fresnel contrast appears only out of focus. Flip the defocus sign and the contrast inverts.</div></div>
       <div class="ltem-panel"><canvas data-c="tie" width="${N}" height="${N}"></canvas>
@@ -568,6 +615,7 @@ function render({ model, el }) {
     tilt: $('[data-k="tilt"]'),
     defocus: $('[data-k="defocus"]'),
     logDose: $('[data-k="logDose"]'),
+    arrows: $('[data-k="arrows"]'),
   };
   const deg = (r) => (r * 180) / Math.PI;
 
@@ -576,8 +624,9 @@ function render({ model, el }) {
     inputs.helicity.value = Math.round(deg(state.helicity));
     inputs.radius.value = Math.round(state.radius * 1e9);
     inputs.tilt.value = Math.round(deg(state.tilt));
-    inputs.defocus.value = (state.defocus * 1e3).toFixed(2);
+    inputs.defocus.value = Math.round(state.defocus * 1e6);
     inputs.logDose.value = state.logDose;
+    inputs.arrows.checked = state.arrows;
     labels();
   }
 
@@ -587,10 +636,28 @@ function render({ model, el }) {
     root.querySelector('[data-v="helicity"]').textContent = `${h}°${kind}`;
     root.querySelector('[data-v="radius"]').textContent = `${Math.round(state.radius * 1e9)} nm`;
     root.querySelector('[data-v="tilt"]').textContent = `${Math.round(deg(state.tilt))}°`;
-    const d = state.defocus * 1e3;
-    root.querySelector('[data-v="defocus"]').textContent = Math.abs(d) < 0.01 ? "0 (in focus)" : `${d > 0 ? "+" : "−"}${Math.abs(d).toFixed(2)} mm`;
+    const d = Math.round(state.defocus * 1e6);
+    root.querySelector('[data-v="defocus"]').textContent = d === 0 ? "0 (in focus)" : `${d > 0 ? "+" : "−"}${Math.abs(d)} µm`;
+    const dose = 10 ** state.logDose;
     root.querySelector('[data-v="logDose"]').textContent =
-      state.logDose >= 5 ? "noise-free" : `${Math.round(10 ** state.logDose).toLocaleString()} e⁻/px`;
+      state.logDose >= NOISE_FREE ? "noise-free" : `${dose < 10 ? dose.toFixed(dose < 1 ? 2 : 1) : Math.round(dose).toLocaleString()} e⁻/px`;
+  }
+
+  // Fixed phase display range per texture: from the default (untilted, Bloch) configuration, with some headroom.
+  const phaseScale = {};
+  function phaseRange(texture) {
+    if (!phaseScale[texture]) {
+      const ref = magneticPhase(makeTexture({ texture, radius: DEFAULT_RADIUS[texture] || 60e-9, helicity: Math.PI / 2 }), 0);
+      let lo = Infinity;
+      let hi = -Infinity;
+      for (let i = 0; i < N * N; i++) {
+        if (ref[i] < lo) lo = ref[i];
+        if (ref[i] > hi) hi = ref[i];
+      }
+      const pad = 0.1 * (hi - lo);
+      phaseScale[texture] = [lo - pad, hi + pad];
+    }
+    return phaseScale[texture];
   }
 
   // Expensive stages are cached by the parameters they depend on.
@@ -614,14 +681,15 @@ function render({ model, el }) {
       keyW = kW;
     }
     phase = cacheW.phase;
-    const dose = state.logDose >= 5 ? Infinity : 10 ** state.logDose;
+    const dose = state.logDose >= NOISE_FREE ? Infinity : 10 ** state.logDose;
     const df = Math.max(Math.abs(state.defocus), 1e-6);
     const Ip = addNoise(fresnelImage(cacheW.W, df), dose, 11);
     const Im = addNoise(fresnelImage(cacheW.W, -df), dose, 23);
     const image = state.defocus >= 0 ? Ip : Im;
 
     drawMagnetization(ctx.m, cacheM);
-    drawColorWheel(ctx.m, N - 18, 18, 13, "hsl");
+    if (state.arrows) drawArrows(ctx.m, cacheM);
+    drawColorWheel(ctx.m, N - 24, 24, 20, "hsl");
 
     let pmin = Infinity;
     let pmax = -Infinity;
@@ -629,27 +697,36 @@ function render({ model, el }) {
       if (phase[i] < pmin) pmin = phase[i];
       if (phase[i] > pmax) pmax = phase[i];
     }
-    drawGray(ctx.phase, phase, pmin, pmax);
+    const [plo, phiHi] = phaseRange(state.texture);
+    drawGray(ctx.phase, phase, plo, phiHi);
     const range = pmax - pmin;
     ctx.phase.save();
     ctx.phase.fillStyle = "rgba(0,0,0,0.55)";
-    ctx.phase.fillRect(4, 4, 92, 16);
+    ctx.phase.fillRect(4, 4, 98, 16);
     ctx.phase.fillStyle = "#fff";
     ctx.phase.font = "10px system-ui, sans-serif";
-    ctx.phase.fillText(`range ${range.toFixed(2)} rad`, 9, 15);
+    ctx.phase.fillText(`Δφ = ${range.toFixed(2)} rad`, 9, 15);
     ctx.phase.restore();
 
-    let mean = 0;
-    for (let i = 0; i < N * N; i++) mean += image[i];
-    mean /= N * N;
-    let sd = 0;
-    for (let i = 0; i < N * N; i++) sd += (image[i] - mean) ** 2;
-    sd = Math.sqrt(sd / (N * N)) || 1e-3;
-    const half = Math.max(3 * sd, 0.02);
-    drawGray(ctx.img, image, mean - half, mean + half);
+    // Rescale each image to its own intensity range (robust percentiles once noise is on).
+    const noisy = isFinite(dose);
+    let ilo = noisy ? percentile(image, 0.002) : Infinity;
+    let ihi = noisy ? percentile(image, 0.998) : -Infinity;
+    if (!noisy) {
+      for (let i = 0; i < N * N; i++) {
+        if (image[i] < ilo) ilo = image[i];
+        if (image[i] > ihi) ihi = image[i];
+      }
+    }
+    if (ihi - ilo < 1e-3) {
+      const c = (ihi + ilo) / 2;
+      ilo = c - 0.05;
+      ihi = c + 0.05;
+    }
+    drawGray(ctx.img, image, ilo, ihi);
     drawScaleBar(ctx.img, 100);
 
-    if (Math.abs(state.defocus) < 0.01e-3) {
+    if (Math.abs(state.defocus) < 1e-6) {
       ctx.tie.fillStyle = "#000";
       ctx.tie.fillRect(0, 0, N, N);
       ctx.tie.fillStyle = "#bbb";
@@ -659,7 +736,7 @@ function render({ model, el }) {
       ctx.tie.textAlign = "start";
     } else {
       drawInduction(ctx.tie, inductionFromPhase(tiePhase(Ip, Im, df)));
-      drawColorWheel(ctx.tie, N - 18, 18, 13, "hsv");
+      drawColorWheel(ctx.tie, N - 24, 24, 20, "hsv");
     }
 
     // Context-sensitive hints for the most instructive situations.
@@ -667,7 +744,7 @@ function render({ model, el }) {
     const isNeelLike = (state.texture === "skyrmion" || state.texture === "lattice") && (h < 15 || h > 165);
     if (isNeelLike && Math.abs(deg(state.tilt)) < 3) {
       note.textContent =
-        "Néel skyrmions are invisible in Lorentz TEM at zero tilt: their magnetic field has no curl along the beam. Try tilting the sample.";
+        "A Néel skyrmion in a flat film gives no Lorentz contrast: its radial in-plane magnetization produces no net deflection of the beam. Tilt the sample so the out-of-plane core gains a component perpendicular to the beam.";
     } else if (range < 0.05) {
       note.textContent = "This texture produces almost no phase shift in this geometry.";
     } else if (dose < 300) {
@@ -691,7 +768,7 @@ function render({ model, el }) {
 
   inputs.texture.addEventListener("change", () => {
     state.texture = inputs.texture.value;
-    if (state.texture === "lattice") state.radius = Math.min(state.radius, 35e-9);
+    state.radius = DEFAULT_RADIUS[state.texture] || state.radius;
     state.cx = 0;
     state.cy = 0;
     syncInputs();
@@ -710,11 +787,15 @@ function render({ model, el }) {
     schedule();
   });
   inputs.defocus.addEventListener("input", () => {
-    state.defocus = +inputs.defocus.value * 1e-3;
+    state.defocus = +inputs.defocus.value * 1e-6;
     schedule();
   });
   inputs.logDose.addEventListener("input", () => {
     state.logDose = +inputs.logDose.value;
+    schedule();
+  });
+  inputs.arrows.addEventListener("change", () => {
+    state.arrows = inputs.arrows.checked;
     schedule();
   });
   root.querySelectorAll("[data-preset]").forEach((b) =>
@@ -722,10 +803,7 @@ function render({ model, el }) {
       const p = b.dataset.preset;
       if (p === "bloch") state.helicity = Math.PI / 2;
       if (p === "neel") state.helicity = 0;
-      if (p === "center") {
-        state.cx = 0;
-        state.cy = 0;
-      }
+      if (p === "reset") resetState();
       syncInputs();
       schedule();
     })

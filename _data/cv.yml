@@ -7,9 +7,10 @@ cv:
   summary: >
     Research scientist working at the intersection of machine learning and electron microscopy. I build self-supervised and
     physics-informed methods for inverse problems in scientific imaging (deep generative priors, implicit neural representations, and
-    differentiable forward models) and ship them as open-source tools used across the field. Recent work produced >10× faster and 40%
-    higher-resolution ptychographic reconstructions, secured $1.2M in funding from Toyota Research Institute, and is being transferred into
-    semiconductor metrology workflows.
+    differentiable forward models) and ship them as open-source tools used across the field. I am currently developing multimodal vision
+    transformer foundation models for electron microscopy, pretrained on large simulated diffraction datasets together with crystal structure
+    and composition, as part of a $1.2M Deep Material Priors program with Toyota Research Institute. Earlier work produced >10× faster and
+    40% higher-resolution ptychographic reconstructions and is being transferred into semiconductor metrology workflows.
 
   social_networks:
     - network: GitHub
@@ -49,7 +50,7 @@ cv:
         highlights:
           - Proposed and demonstrated a self-supervised deep-prior framework for solving inverse problems in (S)TEM, now a reusable approach underpinning projects in ptychography, tomography, and crystallography. Supervise extensions of the method by three graduate students and two postdocs, with collaborations at SLAC, UC Berkeley, and the Technion.
           - Initiated and led the first application of this framework to electron ptychography, achieving a >10× speedup and 40% resolution improvement over state-of-the-art ML and iterative baselines.
-          - Led the technical contributions behind a $1.2M award from Toyota Research Institute for Deep Material Priors, a program building physics-aware foundation models for materials characterization.
+          - Led the technical contributions behind a $1.2M award from Toyota Research Institute for Deep Material Priors, a program building physics-aware foundation models for materials characterization. Now developing its multimodal vision transformer models (diffraction, structure, and composition encoders with a fusion backbone), pretrained with masked autoencoding on large simulated datasets using distributed (DDP/FSDP) training.
           - Developed whole-pattern-fitting methods for improved strain mapping, now being adopted for semiconductor metrology workflows at Samsung.
           - Created [quantEM](https://github.com/electronmicroscopy/quantem), an open-source library for quantitative electron microscopy, and lead its ptychography and machine learning development.
 
@@ -148,7 +149,7 @@ cv:
     Skills:
       - name: Machine learning
         icon: fa-solid fa-brain
-        keywords: "self-supervised learning, inverse problems, implicit neural representations, deep generative priors and diffusion models, vision transformers and CNNs, differentiable programming, iterative reconstruction and optimization"
+        keywords: "vision transformers, multimodal foundation models, masked autoencoder pretraining, self-supervised learning, inverse problems, implicit neural representations, deep generative priors and diffusion models, CNNs, differentiable programming, iterative reconstruction and optimization"
       - name: Software
         icon: fa-solid fa-code
         keywords: "Python (NumPy, SciPy, scikit-learn), PyTorch, CUDA and JAX (working knowledge), package design and distribution, testing and CI, open-source maintenance"

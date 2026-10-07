@@ -279,12 +279,44 @@ function renderProbeToCanvas(offscreen, cropSize, pixelSize, qMax, defocus, lamb
   ctx.putImageData(imgData, 0, 0);
 }
 
-function renderScene(ctx, W, H, atoms, view, probeX, probeY, qMax, defocus, dpCanvas, probeCanvas, dpSize, cropSize, pixelSize, cellDimZ) {
+// The atoms and the view never change, so they are drawn once into a transparent layer (far atoms first).
+function renderAtomLayer(W, H, atoms, view) {
+  const layer = document.createElement("canvas");
+  layer.width = W; layer.height = H;
+  const ctx = layer.getContext("2d");
+  const numAtoms = atoms.length / 4;
+  // Negate atom z to flip the block vertically
+  const projected = new Array(numAtoms);
+  for (let i=0;i<numAtoms;i++){
+    const p=proj(atoms[i*4], atoms[i*4+1], -atoms[i*4+2], view);
+    projected[i]={sx:p.sx,sy:p.sy,depth:p.depth,grain:atoms[i*4+3]};
+  }
+  projected.sort((a,b)=>a.depth-b.depth);
+  const minD=projected[0].depth, maxD=projected[numAtoms-1].depth;
+  const rangeD=maxD-minD||1;
+
+  for (let i=0;i<numAtoms;i++){
+    const a=projected[i];
+    const t=(a.depth-minD)/rangeD;
+    const fade=0.2+0.8*t;
+    const gc=GRAIN_COLORS[a.grain];
+    const size=1.5+3.0*t;
+    ctx.fillStyle=`rgb(${gc[0]*fade|0},${gc[1]*fade|0},${gc[2]*fade|0})`;
+    ctx.strokeStyle=`rgba(0,0,0,${0.15+0.5*t})`;
+    ctx.lineWidth=0.6;
+    ctx.beginPath();
+    ctx.arc(a.sx, a.sy, size/2, 0, Math.PI*2);
+    ctx.fill();
+    ctx.stroke();
+  }
+  return layer;
+}
+
+function renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, dpCanvas, probeCanvas, dpSize, cropSize, pixelSize, cellDimZ) {
   ctx.clearRect(0,0,W,H);
   ctx.fillStyle = "#080808";
   ctx.fillRect(0,0,W,H);
 
-  const numAtoms = atoms.length / 4;
   const dpHalf = dpSize / 2;
 
   // Scene z-layout: beam from top, DP at bottom
@@ -318,31 +350,8 @@ function renderScene(ctx, W, H, atoms, view, probeX, probeY, qMax, defocus, dpCa
   ctx.lineTo(c2.sx,c2.sy); ctx.lineTo(c3.sx,c3.sy);
   ctx.closePath(); ctx.stroke();
 
-  // ---- Draw atoms (sorted by depth, back to front) ----
-  // Negate atom z to flip the block vertically
-  const projected = new Array(numAtoms);
-  for (let i=0;i<numAtoms;i++){
-    const p=proj(atoms[i*4], atoms[i*4+1], -atoms[i*4+2], view);
-    projected[i]={sx:p.sx,sy:p.sy,depth:p.depth,grain:atoms[i*4+3]};
-  }
-  projected.sort((a,b)=>a.depth-b.depth);
-  const minD=projected[0].depth, maxD=projected[numAtoms-1].depth;
-  const rangeD=maxD-minD||1;
-
-  for (let i=0;i<numAtoms;i++){
-    const a=projected[i];
-    const t=(a.depth-minD)/rangeD;
-    const fade=0.2+0.8*t;
-    const gc=GRAIN_COLORS[a.grain];
-    const size=1.5+3.0*t;
-    ctx.fillStyle=`rgb(${gc[0]*fade|0},${gc[1]*fade|0},${gc[2]*fade|0})`;
-    ctx.strokeStyle=`rgba(0,0,0,${0.15+0.5*t})`;
-    ctx.lineWidth=0.6;
-    ctx.beginPath();
-    ctx.arc(a.sx, a.sy, size/2, 0, Math.PI*2);
-    ctx.fill();
-    ctx.stroke();
-  }
+  // ---- Atoms (pre-rendered layer) ----
+  ctx.drawImage(atomLayer, 0, 0);
 
   // ---- Draw probe cone ----
   // Affine center: the transform maps pixel (imgW/2, imgH/2) to this screen point
@@ -533,6 +542,7 @@ function render({ model, el }) {
 
   const id = "s4d-" + Math.random().toString(36).slice(2, 8);
   const dpSize = 60; // DP image size in Angstroms (in 3D scene)
+  const DEFOCUS = 300; // fixed probe defocus (Å); crossover near the top surface
 
   const style = document.createElement("style");
   style.textContent = `
@@ -552,7 +562,7 @@ function render({ model, el }) {
     .${id}-bottom-hint { font-size: 11px; color: var(--${id}-dim, #555); text-align: center; margin-top: 4px; }
     .${id}-controls { display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px 20px; align-items: flex-end; padding: 8px 4px; }
     .${id}-canvas-wrap { min-width: 0; }
-    .${id}-canvas { width: 100%; display: block; border-radius: 4px; cursor: crosshair; touch-action: none; }
+    .${id}-canvas { width: 100%; display: block; border-radius: 4px; }
     .${id}-slider-group { flex: 1; min-width: 160px; }
     .${id}-slider-group label { display: block; font-size: 14px; color: var(--${id}-label, #aaa); margin-bottom: 3px; }
     .${id}-slider-group input[type=range] { width: 100%; accent-color: #00cc66; }
@@ -577,18 +587,18 @@ function render({ model, el }) {
       <div class="${id}-canvas-wrap">
         <div class="${id}-title">4DSTEM Diffraction</div>
         <canvas class="${id}-canvas" id="${id}-scene"></canvas>
-        <div class="${id}-bottom-hint">Drag on the 3D view to move the electron probe</div>
+        <div class="${id}-bottom-hint">Probe defocus fixed at +${DEFOCUS} Å (focused near the top surface)</div>
       </div>
       <div class="${id}-controls">
+        <div class="${id}-slider-group">
+          <label>Scan Position</label>
+          <input type="range" id="${id}-pos" min="0" max="1" step="0.001" value="0.5">
+          <div class="${id}-slider-val" id="${id}-pos-val"></div>
+        </div>
         <div class="${id}-slider-group">
           <label>Convergence Semiangle</label>
           <input type="range" id="${id}-qmax" min="0.025" max="1.015" step="0.005" value="${initQMax}">
           <div class="${id}-slider-val" id="${id}-qmax-val"></div>
-        </div>
-        <div class="${id}-slider-group">
-          <label>Defocus (Å)</label>
-          <input type="range" id="${id}-defocus" min="-500" max="500" step="5" value="0">
-          <div class="${id}-slider-val" id="${id}-defocus-val">0 Å</div>
         </div>
         <div class="${id}-slider-group">
           <label>Display Gamma</label>
@@ -629,8 +639,8 @@ function render({ model, el }) {
     const canvas = wrap.querySelector(`#${id}-scene`);
     const qmaxSlider = wrap.querySelector(`#${id}-qmax`);
     const qmaxVal = wrap.querySelector(`#${id}-qmax-val`);
-    const defocusSlider = wrap.querySelector(`#${id}-defocus`);
-    const defocusVal = wrap.querySelector(`#${id}-defocus-val`);
+    const posSlider = wrap.querySelector(`#${id}-pos`);
+    const posVal = wrap.querySelector(`#${id}-pos-val`);
     const gammaSlider = wrap.querySelector(`#${id}-gamma`);
     const gammaVal = wrap.querySelector(`#${id}-gamma-val`);
     const scanBtn = wrap.querySelector(`#${id}-scan`);
@@ -646,14 +656,18 @@ function render({ model, el }) {
     // Generate sample
     const sample = generateSample({ pixelSize, cellDimX, cellDimY, cellDimZ, aLattice, sigma });
     const { potential, imW, imH, atoms } = sample;
+    const hc = cropSize * pixelSize / 2;
+    const xMin = -cellDimX/2 + hc, xMax = cellDimX/2 - hc; // probe x range (Å); the sample is uniform along y
 
     // State
     let probeX = 0, probeY = 0;
-    let qMax = initQMax, defocus = 0, gamma = 0.25;
+    let qMax = initQMax, gamma = 0.25;
+    const defocus = DEFOCUS;
     let probe = computeProbe(cropSize, pixelSize, qMax, defocus, lambda);
     let scanning = false, scanAnimId = null;
 
     const view = makeView(0, -30, 10.0, W * 0.40, H * 0.43, 100);
+    const atomLayer = renderAtomLayer(W, H, atoms, view);
 
     function updateQMaxLabel() {
       const mrad = qMax * lambda * 1000;
@@ -669,57 +683,34 @@ function render({ model, el }) {
       }
       const intensity = computeDiffraction(potential, imW, imH, probe.probeRe, probe.probeIm, probeX, probeY, cropSize, pixelSize);
       renderDPtoCanvas(dpOffscreen, intensity, cropSize, gamma);
-      renderScene(ctx, W, H, atoms, view, probeX, probeY, qMax, defocus, dpOffscreen, probeOffscreen, dpSize, cropSize, pixelSize, cellDimZ);
+      renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, dpOffscreen, probeOffscreen, dpSize, cropSize, pixelSize, cellDimZ);
     }
 
-    // Drag
-    let isDragging = false, rafPending = false;
-
-    function canvasToProbe(clientX, clientY) {
-      const rect = canvas.getBoundingClientRect();
-      const sx = (clientX - rect.left) / rect.width * W;
-      const sy = (clientY - rect.top) / rect.height * H;
-      return unproj(sx, sy, view);
+    // Coalesce slider input to one render per animation frame
+    let rafPending = false;
+    function scheduleRender() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(() => { rafPending = false; renderAll(); });
     }
 
-    function clampProbe() {
-      const hc = cropSize * pixelSize / 2;
-      probeX = Math.max(-cellDimX/2+hc, Math.min(cellDimX/2-hc, probeX));
-      probeY = Math.max(-cellDimY/2+hc, Math.min(cellDimY/2-hc, probeY));
+    // Scan position: probe x along the sample, from the slider fraction
+    function setPos(f) {
+      probeX = xMin + f * (xMax - xMin);
+      posVal.textContent = `x = ${probeX.toFixed(1)} Å`;
     }
-
-    function onPointerMove(cx, cy) {
-      const pos = canvasToProbe(cx, cy);
-      probeX = pos.x; probeY = pos.y;
-      clampProbe();
-      if (!rafPending) {
-        rafPending = true;
-        requestAnimationFrame(() => { renderAll(); rafPending = false; });
-      }
-    }
-
-    // Pointer events (Shadow DOM-safe: pointer capture replaces document-level mousemove/mouseup)
-    canvas.addEventListener("pointerdown", (e) => {
-      isDragging = true;
-      canvas.setPointerCapture(e.pointerId);
-      if(scanning) stopScan();
-      onPointerMove(e.clientX, e.clientY);
-    });
-    canvas.addEventListener("pointermove", (e) => { if(isDragging) onPointerMove(e.clientX, e.clientY); });
-    canvas.addEventListener("pointerup", () => { isDragging = false; });
-    canvas.addEventListener("pointercancel", () => { isDragging = false; });
 
     // Sliders
+    posSlider.addEventListener("input", () => {
+      if(scanning) stopScan();
+      setPos(parseFloat(posSlider.value)); scheduleRender();
+    });
     qmaxSlider.addEventListener("input", () => {
       qMax = parseFloat(qmaxSlider.value); updateQMaxLabel();
-      probe = computeProbe(cropSize, pixelSize, qMax, defocus, lambda); probeNeedsRender = true; renderAll();
-    });
-    defocusSlider.addEventListener("input", () => {
-      defocus = parseFloat(defocusSlider.value); defocusVal.textContent = `${defocus} Å`;
-      probe = computeProbe(cropSize, pixelSize, qMax, defocus, lambda); probeNeedsRender = true; renderAll();
+      probe = computeProbe(cropSize, pixelSize, qMax, defocus, lambda); probeNeedsRender = true; scheduleRender();
     });
     gammaSlider.addEventListener("input", () => {
-      gamma = parseFloat(gammaSlider.value); gammaVal.textContent = gamma.toFixed(2); probeNeedsRender = true; renderAll();
+      gamma = parseFloat(gammaSlider.value); gammaVal.textContent = gamma.toFixed(2); probeNeedsRender = true; scheduleRender();
     });
 
     // Scan
@@ -729,14 +720,13 @@ function render({ model, el }) {
     }
     function startScan() {
       scanning = true; scanBtn.classList.add("active"); scanBtn.textContent = "■ Stop";
-      const hc = cropSize*pixelSize/2;
-      const xMin = -cellDimX/2+hc, xMax = cellDimX/2-hc;
-      const period = 6000, startTime = performance.now(), startY = probeY;
+      // Start the triangle sweep from the current slider position, heading right
+      const period = 6000, f0 = parseFloat(posSlider.value), startTime = performance.now() - f0 * period / 2;
       function tick(now) {
         if(!scanning) return;
         const t = ((now-startTime)%period)/period;
-        probeX = xMin + (t<0.5 ? t*2 : 2-t*2) * (xMax-xMin);
-        probeY = startY;
+        const f = t<0.5 ? t*2 : 2-t*2;
+        posSlider.value = f; setPos(f);
         renderAll();
         scanAnimId = requestAnimationFrame(tick);
       }
@@ -748,6 +738,7 @@ function render({ model, el }) {
     loadingEl.style.display = "none";
     mainEl.style.display = "flex";
     updateQMaxLabel();
+    setPos(parseFloat(posSlider.value));
     renderAll();
   }, 50);
 }

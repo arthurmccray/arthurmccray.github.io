@@ -6,9 +6,11 @@ description: Watch the diffraction pattern change as you scan an electron probe 
 nav: false
 ---
 
-Drag the electron probe across the polycrystalline sample to see how the diffraction pattern changes at each position. Use the sliders to
-switch between nanobeam diffraction (small convergence semiangle, separated Bragg disks) and ptychographic imaging conditions (large
-semiangle, overlapping disks). The defocus slider shifts the probe crossover, changing the illumination on the sample.
+<div class="back-link"><a href="{{ '/interactive/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> interactive</a></div>
+
+Move the scan-position slider to sweep the electron probe across the polycrystalline sample and see how the diffraction pattern changes as
+it crosses each grain. The convergence semiangle switches between nanobeam diffraction (small semiangle, separated Bragg disks) and
+ptychographic imaging conditions (large semiangle, overlapping disks).
 
 <div data-widget="stem4d-sim"></div>
 

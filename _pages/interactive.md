@@ -16,7 +16,7 @@ precomputed images.
 <div class="card h-100">
 <div class="card-body">
 <h5 class="card-title"><a href="{{ '/interactive/4dstem/' | relative_url }}">4D-STEM diffraction</a></h5>
-<p class="card-text">Drag the probe across a polycrystalline sample and watch the diffraction pattern change, from nanobeam
+<p class="card-text">Scan the probe across a polycrystalline sample and watch the diffraction pattern change, from nanobeam
 diffraction to ptychographic imaging conditions.</p>
 </div>
 </div>

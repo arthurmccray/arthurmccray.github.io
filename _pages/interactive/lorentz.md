@@ -6,6 +6,8 @@ description: Image magnetic skyrmions with an electron microscope, and reconstru
 nav: false
 ---
 
+<div class="back-link"><a href="{{ '/interactive/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> interactive</a></div>
+
 Magnetic skyrmions are tiny whirls in the magnetization of a material, typically tens to hundreds of nanometers across. Electrons passing
 through a magnetic film are deflected by the Lorentz force from the in-plane magnetic induction, by only tens of microradians, far less than
 Bragg scattering. Equivalently, the electron wave picks up a phase shift from the magnetic vector potential (the Aharonov–Bohm effect). An

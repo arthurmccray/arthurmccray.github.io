@@ -7,6 +7,8 @@ importance: 2
 category: software
 ---
 
+<div class="back-link"><a href="{{ '/projects/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> projects</a></div>
+
 <p class="lead"><strong>Paper:</strong>
 <a href="https://doi.org/10.1103/PhysRevApplied.15.044025">Understanding complex magnetic spin textures with simulation-assisted Lorentz transmission electron microscopy</a>,
 <em>Physical Review Applied</em> (2021) · <strong>Code:</strong> <a href="https://github.com/PyLorentz/PyLorentz">github.com/PyLorentz/PyLorentz</a></p>

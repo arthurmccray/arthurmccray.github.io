@@ -7,6 +7,8 @@ importance: 0
 category: research
 ---
 
+<div class="back-link"><a href="{{ '/projects/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> projects</a></div>
+
 <p class="lead"><strong>Current project.</strong> A $1.2M program with the Toyota Research Institute to build physics-aware foundation
 models for materials characterization.</p>
 

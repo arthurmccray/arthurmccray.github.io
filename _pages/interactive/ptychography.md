@@ -6,6 +6,8 @@ description: Multislice electron ptychography, from 4D-STEM acquisition to gradi
 nav: false
 ---
 
+<div class="back-link"><a href="{{ '/interactive/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> interactive</a></div>
+
 <div data-widget="ptycho-ms"></div>
 
 <script type="module" src="{{ '/assets/js/widgets/mount.js' | relative_url }}"></script>

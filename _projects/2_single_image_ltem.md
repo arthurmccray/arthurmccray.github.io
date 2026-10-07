@@ -7,6 +7,8 @@ importance: 2
 category: research
 ---
 
+<div class="back-link"><a href="{{ '/projects/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> projects</a></div>
+
 <p class="lead"><strong>Papers:</strong>
 <a href="https://doi.org/10.1038/s41524-024-01285-8">AI-enabled Lorentz microscopy for quantitative imaging of nanoscale magnetic spin textures</a>,
 <em>npj Computational Materials</em> (2024) ·

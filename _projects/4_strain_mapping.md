@@ -6,6 +6,8 @@ importance: 4
 category: research
 ---
 
+<div class="back-link"><a href="{{ '/projects/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> projects</a></div>
+
 Nanobeam electron diffraction strain mapping usually measures the positions of individual Bragg disks, throwing away most of the information
 in each diffraction pattern. I developed whole-pattern-fitting methods that use the full pattern instead, for improved strain mapping.
 

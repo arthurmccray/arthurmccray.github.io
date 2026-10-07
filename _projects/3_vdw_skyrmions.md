@@ -7,6 +7,8 @@ importance: 3
 category: research
 ---
 
+<div class="back-link"><a href="{{ '/projects/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> projects</a></div>
+
 <p class="lead"><strong>Papers:</strong>
 <a href="https://doi.org/10.1021/acs.nanolett.2c02275">Thermal hysteresis and ordering behavior of magnetic skyrmion lattices</a>,
 <em>Nano Letters</em> (2022) ·

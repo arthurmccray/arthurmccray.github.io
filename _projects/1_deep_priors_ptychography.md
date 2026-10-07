@@ -7,6 +7,8 @@ importance: 1
 category: research
 ---
 
+<div class="back-link"><a href="{{ '/projects/' | relative_url }}"><i class="fa-solid fa-arrow-left"></i> projects</a></div>
+
 <p class="lead"><strong>Papers:</strong>
 <a href="https://doi.org/10.48550/arXiv.2511.07795">Deep generative priors for robust and efficient electron ptychography</a>, arXiv (2025) ·
 <a href="https://doi.org/10.1111/jmi.13407">Accelerating iterative ptychography with an integrated neural network</a>, <em>Journal of Microscopy</em> (2025)</p>
@@ -22,7 +24,7 @@ and 40% better resolution**, with improved robustness at low dose and better dep
 
 <div class="row justify-content-sm-center">
 <div class="col-sm-10 mt-3 mt-md-0">
-{% include figure.liquid loading="eager" path="assets/img/projects/deep_prior_ptycho.jpg" class="img-fluid rounded" zoomable=true %}
+{% include figure.liquid loading="eager" path="assets/img/projects/deep_prior_ptycho.jpg" class="img-fluid rounded fig-white" zoomable=true %}
 </div>
 </div>
 <div class="caption">
@@ -36,7 +38,7 @@ information limit improves from 1.98 Å with pixelated object and probe to 1.57 
 
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 mt-3 mt-md-0">
-{% include figure.liquid loading="eager" path="assets/img/projects/dgp_moss6.jpg" class="img-fluid rounded" zoomable=true %}
+{% include figure.liquid loading="eager" path="assets/img/projects/dgp_moss6.jpg" class="img-fluid rounded fig-white" zoomable=true %}
 </div>
 </div>
 <div class="caption">

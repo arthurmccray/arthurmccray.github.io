@@ -226,8 +226,9 @@ function infernoMap(t) {
 
 const GRAIN_COLORS = [[255,25,0],[0,200,255],[255,180,0]];
 
+const DP_LUT_SIZE = 4096;
 function renderDPtoCanvas(offscreen, intensity, N, gamma) {
-  offscreen.width = N; offscreen.height = N;
+  if (offscreen.width !== N) { offscreen.width = N; offscreen.height = N; }
   const ctx = offscreen.getContext("2d");
   const imgData = ctx.createImageData(N, N);
   const px = imgData.data;
@@ -239,10 +240,13 @@ function renderDPtoCanvas(offscreen, intensity, N, gamma) {
   for (let i=0;i<N*N;i++){if(disp[i]<mn)mn=disp[i];if(disp[i]>mx)mx=disp[i];}
   const range=mx-mn||1;
 
+  // Gamma + colormap through a lookup table (one pow per entry instead of per pixel)
+  const lut = new Uint8Array(DP_LUT_SIZE*3);
+  for (let k=0;k<DP_LUT_SIZE;k++){ const [r,g,b]=infernoMap(Math.pow(k/(DP_LUT_SIZE-1), gamma)); lut[k*3]=r; lut[k*3+1]=g; lut[k*3+2]=b; }
+  const scale=(DP_LUT_SIZE-1)/range;
   for (let i=0;i<N*N;i++){
-    const t=Math.pow((disp[i]-mn)/range, gamma);
-    const [r,g,b]=infernoMap(t);
-    px[i*4]=r; px[i*4+1]=g; px[i*4+2]=b; px[i*4+3]=255;
+    const k=((disp[i]-mn)*scale+0.5|0)*3;
+    px[i*4]=lut[k]; px[i*4+1]=lut[k+1]; px[i*4+2]=lut[k+2]; px[i*4+3]=255;
   }
   ctx.putImageData(imgData,0,0);
 }
@@ -251,37 +255,30 @@ function renderDPtoCanvas(offscreen, intensity, N, gamma) {
 // Unified 3D scene renderer
 // ============================================================
 
-function renderProbeToCanvas(offscreen, cropSize, pixelSize, qMax, defocus, lambda, gamma) {
-  const N = cropSize;
+// Real-space probe intensity |psi(r)|^2 over the whole crop (fixed field of view), linear scale so its size reads honestly.
+function renderProbeToCanvas(offscreen, probe, N) {
   offscreen.width = N; offscreen.height = N;
   const ctx = offscreen.getContext("2d");
   const imgData = ctx.createImageData(N, N);
   const px = imgData.data;
-
-  // Compute aperture intensity in diffraction space (|A(q)|^2), fftshifted for display
-  const dq = 1.0 / (N * pixelSize);
-  const intensity = new Float32Array(N * N);
-  for (let r = 0; r < N; r++) {
-    const qy = r < N/2 ? r * dq : (r - N) * dq;
-    for (let c = 0; c < N; c++) {
-      const qx = c < N/2 ? c * dq : (c - N) * dq;
-      const q = Math.sqrt(qx*qx + qy*qy);
-      const amp = Math.max(0, Math.min(1, (qMax - q) / dq + 0.5));
-      // fftshift: swap quadrants for display
-      const dr = (r + (N>>1)) % N, dc = (c + (N>>1)) % N;
-      intensity[dr * N + dc] = amp * amp;
-    }
-  }
-
-  let mn = Infinity, mx = -Infinity;
-  for (let i = 0; i < N*N; i++) { if (intensity[i] < mn) mn = intensity[i]; if (intensity[i] > mx) mx = intensity[i]; }
-  const range = mx - mn || 1;
-  for (let i = 0; i < N*N; i++) {
-    const t = Math.pow((intensity[i] - mn) / range, gamma);
-    const [r, g, b] = infernoMap(t);
+  const I = new Float32Array(N * N);
+  let mx = 0;
+  for (let i = 0; i < N * N; i++) { I[i] = probe.probeRe[i] ** 2 + probe.probeIm[i] ** 2; if (I[i] > mx) mx = I[i]; }
+  for (let i = 0; i < N * N; i++) {
+    const [r, g, b] = infernoMap(I[i] / (mx || 1));
     px[i*4] = r; px[i*4+1] = g; px[i*4+2] = b; px[i*4+3] = 255;
   }
   ctx.putImageData(imgData, 0, 0);
+}
+
+// Probe FWHM (Å), as the diameter of a disk with the same area as the region above half maximum.
+function probeFWHM(probe, N, pixelSize) {
+  let mx = 0;
+  const I = new Float32Array(N * N);
+  for (let i = 0; i < N * N; i++) { I[i] = probe.probeRe[i] ** 2 + probe.probeIm[i] ** 2; if (I[i] > mx) mx = I[i]; }
+  let above = 0;
+  for (let i = 0; i < N * N; i++) if (I[i] >= mx / 2) above++;
+  return 2 * Math.sqrt(above / Math.PI) * pixelSize;
 }
 
 // The atoms and the view never change, so they are drawn once into a transparent layer (far atoms first).
@@ -376,15 +373,20 @@ function renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, 
   const gap = 20;
   const labelH = 16;
 
-  // Upper right: initial probe intensity (diffraction space)
+  // Upper right: probe intensity in real space, at a fixed field of view (the whole crop), with a 10 Å scale bar
   const probeY1 = 8;
   ctx.strokeStyle = "rgba(0,255,136,0.5)";
   ctx.lineWidth = 1.5;
   ctx.strokeRect(insetX-1, probeY1-1, insetSize+2, insetSize+2);
   ctx.drawImage(probeCanvas, insetX, probeY1, insetSize, insetSize);
+  const barPx = insetSize * 10 / (cropSize * pixelSize);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(insetX + 8, probeY1 + insetSize - 12, barPx, 3);
+  ctx.font = "12px -apple-system, sans-serif";
+  ctx.fillText("10 Å", insetX + 8, probeY1 + insetSize - 17);
   ctx.fillStyle = "rgba(0,255,136,0.6)";
   ctx.font = "16px -apple-system, sans-serif";
-  ctx.fillText("Initial Probe Intensity", insetX, probeY1 + insetSize + labelH);
+  ctx.fillText("Probe (real space)", insetX, probeY1 + insetSize + labelH);
 
   // Lower right: diffraction pattern
   const dpY1 = probeY1 + insetSize + labelH + gap;
@@ -548,12 +550,12 @@ function render({ model, el }) {
   const aLattice = model.get("a_lattice") || 4.0;
   const sigma = model.get("sigma") || 0.2;
   const lambda = model.get("lambda") || 0.0197;
-  const cropSize = model.get("crop_size") || 128;
+  const cropSize = model.get("crop_size") || 256; // 51 Å window, wide enough for the probe at 1 mrad
   const initQMax = model.get("probe_q_max") || 0.15;
 
   const id = "s4d-" + Math.random().toString(36).slice(2, 8);
   const dpSize = 60; // DP image size in Angstroms (in 3D scene)
-  const DEFOCUS = 300; // fixed probe defocus (Å); crossover near the top surface
+  const DEFOCUS = 0; // probe focused on the sample, so probe size falls steadily as the semiangle grows
 
   const style = document.createElement("style");
   style.textContent = `
@@ -598,7 +600,7 @@ function render({ model, el }) {
       <div class="${id}-canvas-wrap">
         <div class="${id}-title">4DSTEM Diffraction</div>
         <canvas class="${id}-canvas" id="${id}-scene"></canvas>
-        <div class="${id}-bottom-hint">Probe defocus fixed at +${DEFOCUS} Å (focused near the top surface)</div>
+        <div class="${id}-bottom-hint">Probe focused on the sample. Larger semiangle: smaller probe, larger diffraction disks</div>
       </div>
       <div class="${id}-controls">
         <div class="${id}-slider-group">
@@ -608,7 +610,7 @@ function render({ model, el }) {
         </div>
         <div class="${id}-slider-group">
           <label>Convergence Semiangle</label>
-          <input type="range" id="${id}-qmax" min="0.025" max="1.015" step="0.005" value="${initQMax}">
+          <input type="range" id="${id}-qmax" min="0.05" max="1.015" step="0.005" value="${initQMax}">
           <div class="${id}-slider-val" id="${id}-qmax-val"></div>
         </div>
         <div class="${id}-slider-group">
@@ -682,14 +684,15 @@ function render({ model, el }) {
 
     function updateQMaxLabel() {
       const mrad = qMax * lambda * 1000;
-      qmaxVal.textContent = `${qMax.toFixed(2)} Å⁻¹ (${mrad.toFixed(1)} mrad)`;
+      const fwhm = probeFWHM(probe, cropSize, pixelSize);
+      qmaxVal.textContent = `${qMax.toFixed(2)} Å⁻¹ (${mrad.toFixed(1)} mrad) · probe ≈ ${fwhm < 1 ? fwhm.toFixed(2) : fwhm.toFixed(1)} Å FWHM`;
     }
 
     let probeNeedsRender = true; // flag to re-render probe inset only when sliders change
 
     function renderAll() {
       if (probeNeedsRender) {
-        renderProbeToCanvas(probeOffscreen, cropSize, pixelSize, qMax, defocus, lambda, gamma);
+        renderProbeToCanvas(probeOffscreen, probe, cropSize);
         probeNeedsRender = false;
       }
       const intensity = computeDiffraction(potential, imW, imH, probe.probeRe, probe.probeIm, probeX, probeY, cropSize, pixelSize);
@@ -717,11 +720,11 @@ function render({ model, el }) {
       setPos(parseFloat(posSlider.value)); scheduleRender();
     });
     qmaxSlider.addEventListener("input", () => {
-      qMax = parseFloat(qmaxSlider.value); updateQMaxLabel();
-      probe = computeProbe(cropSize, pixelSize, qMax, defocus, lambda); probeNeedsRender = true; scheduleRender();
+      qMax = parseFloat(qmaxSlider.value);
+      probe = computeProbe(cropSize, pixelSize, qMax, defocus, lambda); probeNeedsRender = true; updateQMaxLabel(); scheduleRender();
     });
     gammaSlider.addEventListener("input", () => {
-      gamma = parseFloat(gammaSlider.value); gammaVal.textContent = gamma.toFixed(2); probeNeedsRender = true; scheduleRender();
+      gamma = parseFloat(gammaSlider.value); gammaVal.textContent = gamma.toFixed(2); scheduleRender();
     });
 
     // Scan

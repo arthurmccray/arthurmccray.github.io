@@ -43,7 +43,6 @@ In CGT, field-cooling produces lattices of Bloch-type magnetic bubbles, which ca
 procedures in the same region of the flake. CGT's large thermal expansion on cooling also let us directly observe magnetoelastic coupling:
 strain in the flake aligns the magnetic stripe domains.
 
-
 <div class="row justify-content-sm-center">
 <div class="col-sm-11 mt-3 mt-md-0">
 {% include figure.liquid loading="eager" path="assets/img/projects/cgt_mixed_edge.jpg" class="img-fluid rounded" zoomable=true %}

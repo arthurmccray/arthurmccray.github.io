@@ -48,6 +48,6 @@ probe. (g, h) Pixelated object with a DGP probe. Insets magnify the red boxes.
 </div>
 
 The same framework now underpins projects in tomography and crystallography, and the implementation lives in
-[quantEM](https://github.com/electronmicroscopy/quantem). You can run the code yourself in the [quantEM tutorial notebook](https://github.com/electronmicroscopy/quantem-tutorials/blob/main/tutorials/diffractive_imaging/ptycho_iter_04_MOSS6.ipynb). 
+[quantEM](https://github.com/electronmicroscopy/quantem). You can run the code yourself in the [quantEM tutorial notebook](https://github.com/electronmicroscopy/quantem-tutorials/blob/main/tutorials/diffractive_imaging/ptycho_iter_04_MOSS6.ipynb).
 
 Interested in how multislice ptychography works? Try the [interactive ptychography demo]({{ '/interactive/ptychography/' | relative_url }}).

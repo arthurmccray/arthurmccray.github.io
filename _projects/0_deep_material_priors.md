@@ -42,7 +42,7 @@ experimental data. Training uses DDP/FSDP and is performed on the [Perlmutter](h
 
 ## Early results
 
-Small pretaining runs are promising and already produce a model that can fill in missing information in sparse, low-dose diffraction data. Initial testing uses 
+Small pretaining runs are promising and already produce a model that can fill in missing information in sparse, low-dose diffraction data. Initial testing uses
 the pre-trained backbone and a simple output head to center diffraction patterns (a non-trivial task because the brightest beam is not always the central beam),
 which is an instrumental step in pre-processing [multi-angle precession electron diffraction (MAPED)](https://academic.oup.com/mam/article/31/6/ozaf103/8321844) data.
 
@@ -63,7 +63,7 @@ centered and merged into a single pattern.
 The longer-term goal of this project is to use the pretrained representation as a **deep material prior** inside physics-based reconstructions, in the
 same way my [deep generative priors for ptychography]({{ '/projects/1_deep_priors_ptychography/' | relative_url }}) regularize the object.
 The difference is that the prior is learned once, across many materials, and will help regularize the reconstruction towards only physically-plausible
-objects given information that is known about the material. 
+objects given information that is known about the material.
 
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 mt-3 mt-md-0">

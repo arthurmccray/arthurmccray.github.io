@@ -13,7 +13,7 @@ category: software
 <a href="https://doi.org/10.1103/PhysRevApplied.15.044025">Understanding complex magnetic spin textures with simulation-assisted Lorentz transmission electron microscopy</a>,
 <em>Physical Review Applied</em> (2021) · <strong>Code:</strong> <a href="https://github.com/PyLorentz/PyLorentz">github.com/PyLorentz/PyLorentz</a></p>
 
-[PyLorentz](https://github.com/PyLorentz/PyLorentz) is an open-source Python codebase for Lorentz transmission electron microscopy (LTEM). I am the 
+[PyLorentz](https://github.com/PyLorentz/PyLorentz) is an open-source Python codebase for Lorentz transmission electron microscopy (LTEM). I am the
 original author and have maintained the package since 2020. It is widely used in the LTEM community for:
 
 - **Simulation:** computing the electron phase shift of an arbitrary magnetization, such as the output of a micromagnetic simulation, with
@@ -24,6 +24,6 @@ original author and have maintained the package since 2020. It is widely used in
 - **ML-based analysis:** self-supervised and simulation-trained approaches to quantitative magnetic imaging.
 
 Simulation matters for LTEM because integrated induction maps are easy to over-interpret. They show the magnetic induction integrated along
-the beam, including stray fields, and are not necessarily representative of the magnetization itself. 
+the beam, including stray fields, and are not necessarily representative of the magnetization itself.
 
 For a taste of what PyLorentz simulates, try the [interactive Lorentz TEM demo]({{ '/interactive/lorentz/' | relative_url }}).

@@ -16,7 +16,6 @@ ptychographic imaging conditions (large semiangle, overlapping disks).
 
 <script type="module" src="{{ '/assets/js/widgets/mount.js' | relative_url }}"></script>
 
-
 ## What is 4D-STEM?
 
 In scanning transmission electron microscopy (STEM), a focused electron probe is rastered across the sample. In **4D-STEM**, a fast pixelated

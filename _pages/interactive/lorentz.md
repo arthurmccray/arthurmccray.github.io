@@ -10,9 +10,9 @@ nav: false
 
 Magnetic skyrmions are tiny whirls in the magnetization of a material, typically tens to hundreds of nanometers across. Electrons passing
 through a magnetic film are deflected by the Lorentz force from the in-plane magnetic induction, by only tens of microradians, far less than
-Bragg scattering. Equivalently, the electron wave picks up a phase shift from the magnetic vector potential (the Aharonov–Bohm effect). 
+Bragg scattering. Equivalently, the electron wave picks up a phase shift from the magnetic vector potential (the Aharonov–Bohm effect).
 **Lorentz TEM** in Fresnel mode turns the phase shift into visible contrast by deliberately
-defocusing the microscope: domain walls then appear as bright or dark regions relative to the domains themselves. 
+defocusing the microscope: domain walls then appear as bright or dark regions relative to the domains themselves.
 
 <div data-widget="ltem-sim"></div>
 
@@ -24,7 +24,7 @@ defocusing the microscope: domain walls then appear as bright or dark regions re
   exactly zero defocus the magnetic contrast vanishes.
 - **Image a Néel skyrmion.** Press _Néel_ (or drag the helicity to 0°). Néel skyrmions, whose spins point radially, produce _no_ Lorentz contrast
   when the film is flat. Tilt the sample and they appear as a pair of bright and dark half-moons, which swap when you tilt the other way.
-  This is how Néel textures, for example in Fe₃GeTe₂, are identified experimentally. 
+  This is how Néel textures, for example in Fe₃GeTe₂, are identified experimentally.
 - **Lower the dose.** Real images are noisy. Watch how shot noise, down to a fraction of an electron per pixel, propagates into the TIE reconstruction. This regime is where
   [machine-learning approaches]({{ '/projects/2_single_image_ltem/' | relative_url }}) help.
 
@@ -42,6 +42,6 @@ defocusing the microscope: domain walls then appear as bright or dark regions re
    phase gives the integrated in-plane magnetic induction, (B<sub>x</sub>, B<sub>y</sub>) ∝ (−∂φ/∂y, ∂φ/∂x).
 
 It is important to note that the TIE reconstruction gives the magnetic induction _integrated along the beam_, including stray
-fields above and below the film, not the magnetization itself. For Bloch skyrmions the two look nearly identical, but for many textures (such as Néel skyrmions) 
-they do not. Interpreting LTEM images therefore requires image simulations, such as those performed in my [PyLorentz](https://github.com/PyLorentz/PyLorentz) package. 
+fields above and below the film, not the magnetization itself. For Bloch skyrmions the two look nearly identical, but for many textures (such as Néel skyrmions)
+they do not. Interpreting LTEM images therefore requires image simulations, such as those performed in my [PyLorentz](https://github.com/PyLorentz/PyLorentz) package.
 It covers arbitrary 3D and tilted magnetizations from micromagnetics, realistic microscope transfer functions, TIE and single-image reconstructions, and ML-based analysis.

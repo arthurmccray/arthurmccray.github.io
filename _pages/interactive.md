@@ -7,7 +7,7 @@ nav: true
 nav_order: 5
 ---
 
-Much of my work involves solving inverse problems in electron microscopy: recovering the relevant information about a sample from different types of measurements. 
+Much of my work involves solving inverse problems in electron microscopy: recovering the relevant information about a sample from different types of measurements.
 These demos let you play with the forward and inverse problems directly. Everything is computed live in your browser.
 
 <div class="row mt-4">

@@ -613,7 +613,7 @@ function render({ model, el }) {
         </div>
         <div class="${id}-slider-group">
           <label>Display Gamma</label>
-          <input type="range" id="${id}-gamma" min="0.1" max="2.0" step="0.05" value="0.25">
+          <input type="range" id="${id}-gamma" min="0.05" max="1" step="0.01" value="0.25">
           <div class="${id}-slider-val" id="${id}-gamma-val">0.25</div>
         </div>
         <div id="${id}-scan" class="${id}-btn">▶ Scan</div>

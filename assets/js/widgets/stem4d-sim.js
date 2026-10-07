@@ -184,6 +184,11 @@ function computeProbe(cropSize, pixelSize, qMax, defocus, lambda) {
   }
   fft2d(probeRe,probeIm,N,N,true);
   fftshift2d(probeRe,N,N); fftshift2d(probeIm,N,N);
+  // Hann window on the centered probe. At small semiangles the probe is wider than the crop, and its hard-edged,
+  // wrapped-around tails put cross-shaped streaks through every Bragg spot; the window tapers them smoothly to zero.
+  const hann = new Float32Array(N);
+  for (let i=0;i<N;i++) hann[i] = 0.5 - 0.5*Math.cos(2*Math.PI*(i+0.5)/N);
+  for (let r=0;r<N;r++) for (let c=0;c<N;c++) { const w=hann[r]*hann[c]; probeRe[r*N+c]*=w; probeIm[r*N+c]*=w; }
   return { probeRe, probeIm };
 }
 

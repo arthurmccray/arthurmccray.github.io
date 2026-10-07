@@ -220,6 +220,7 @@ exclude:
   - docker-compose-slim.yml
   - docs/
   - inbox/
+  - handoffs/
   - "*.stackdump"
   - bash.exe.stackdump
   - Gemfile

@@ -10,3 +10,5 @@ Nanobeam electron diffraction strain mapping usually measures the positions of i
 in each diffraction pattern. I developed whole-pattern-fitting methods that use the full pattern instead, for improved strain mapping.
 
 These methods are being adopted for semiconductor metrology workflows at Samsung, and I supervise their ongoing development.
+
+<p class="lead"><em>Details coming soon!</em></p>

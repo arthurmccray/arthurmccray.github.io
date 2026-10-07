@@ -30,6 +30,21 @@ Deep generative priors (DGPs) for the probe and object feed a differentiable mul
 positions, descan, and beam tilt. Everything is optimized together against the measured data.
 </div>
 
+The benefit is clearest on real, low-dose data. On a public dataset of the MOSS-6 metal-organic framework, recorded at 100 e⁻/Å², using DGPs
+for both the object and the probe reduces noise across a wide range of spatial frequencies without attenuating the signal, and the
+information limit improves from 1.98 Å with pixelated object and probe to 1.57 Å.
+
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 mt-3 mt-md-0">
+{% include figure.liquid loading="eager" path="assets/img/projects/dgp_moss6.jpg" class="img-fluid rounded" zoomable=true %}
+</div>
+</div>
+<div class="caption">
+Reconstructions of the MOSS-6 metal-organic framework from the same experimental dataset. (a) Object phase with DGPs generating both the
+object and the probe, and (b) its FFT; the dashed circle marks 1.7 Å. (c, d) Pixelated object and probe. (e, f) DGP object with a pixelated
+probe. (g, h) Pixelated object with a DGP probe. Insets magnify the red boxes.
+</div>
+
 The same framework now underpins projects in tomography and crystallography, and the implementation lives in
 [quantEM](https://github.com/electronmicroscopy/quantem).
 

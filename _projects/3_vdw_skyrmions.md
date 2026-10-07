@@ -52,6 +52,22 @@ field-cooling procedures, giving a homochiral lattice in one case and a mixed-ch
 induction maps of the boxed regions, with chirality indicated by the arrows.
 </div>
 
+Which lattice forms is stochastic. We could not select it with the applied field or the cooling rate, and when both types appeared in the
+same flake after one cooling run they were almost always separated by large disruptions such as wrinkles. The one exception was a
+homochiral lattice and a mixed-chirality lattice meeting at a single extended defect. That arrangement did not repeat: later field-cooling
+runs with the same parameters produced one lattice type extending across the defect.
+
+<div class="row justify-content-sm-center">
+<div class="col-sm-11 mt-3 mt-md-0">
+{% include figure.liquid loading="eager" path="assets/img/projects/cgt_mixed_edge.jpg" class="img-fluid rounded" zoomable=true %}
+</div>
+</div>
+<div class="caption">
+Homochiral and mixed-chirality bubble lattices meeting at an extended defect in CGT, formed in a single field-cooling run. (a)
+TIE-reconstructed phase image showing right-handed (bright) and left-handed (dark) bubbles. (b, c) Integrated induction maps of the orange
+and green boxes in (a): homochiral above the defect, mixed chirality below it.
+</div>
+
 I also contributed imaging to collaborations on twisted stacking domains in CrI₃
 ([Nature Communications, 2024](https://doi.org/10.1038/s41467-024-50314-z)) and spin textures in an insulating vdW ferromagnet
 ([Advanced Materials, 2024](https://doi.org/10.1002/adma.202311949)).

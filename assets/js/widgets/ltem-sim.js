@@ -21,6 +21,8 @@ const THICKNESS = 40e-9; // film thickness (m)
 const LAMBDA = 2.508e-12; // electron wavelength at 200 kV (m)
 const THETA_C = 5e-6; // beam divergence (rad), damps high frequencies at large defocus
 const TIE_QC = 0.15 / (N * DX); // Tikhonov regularization for the TIE inverse Laplacian (1/m)
+const MAX_TILT_DEG = 35; // tilt slider limit
+const MAX_TILT = (MAX_TILT_DEG * Math.PI) / 180;
 
 // ---------------------------------------------------------------------------
 // FFT: radix-2, in place, split real/imaginary arrays, precomputed twiddles
@@ -250,41 +252,55 @@ export function fresnelImage(W, df) {
   return I;
 }
 
-// Small seeded PRNG so noise is stable while dragging other sliders.
-function mulberry32(seed) {
-  return function () {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+// Uniform in (0, 1) from a hash of (seed, pixel index). Each pixel gets its own fixed draw, so the noise realization does not
+// shift when the clean image changes (a sequential PRNG desynchronizes as soon as one pixel consumes a different number of draws).
+function hashUniform(seed, i) {
+  let h = Math.imul(seed, 0x9e3779b1) ^ Math.imul(i + 1, 0x85ebca6b);
+  h = Math.imul(h ^ (h >>> 16), 0x7feb352d);
+  h = Math.imul(h ^ (h >>> 15), 0x846ca68b);
+  h ^= h >>> 16;
+  return ((h >>> 0) + 0.5) / 4294967296;
+}
+
+// Inverse standard-normal CDF (Acklam's rational approximation, relative error < 1.2e-9).
+function normInv(p) {
+  const a = [-39.6968302866538, 220.946098424521, -275.928510446969, 138.357751867269, -30.6647980661472, 2.50662827745924];
+  const b = [-54.4760987982241, 161.585836858041, -155.698979859887, 66.8013118877197, -13.2806815528857];
+  const c = [-0.00778489400243029, -0.322396458041136, -2.40075827716184, -2.54973253934373, 4.37466414146497, 2.93816398269878];
+  const d = [0.00778469570904146, 0.32246712907004, 2.445134137143, 3.75440866190742];
+  const tail = (q) => (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+  if (p < 0.02425) return tail(Math.sqrt(-2 * Math.log(p)));
+  if (p > 1 - 0.02425) return -tail(Math.sqrt(-2 * Math.log(1 - p)));
+  const q = p - 0.5;
+  const r = q * q;
+  return (
+    ((((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q) / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1)
+  );
 }
 
 /**
  * Add shot noise for `dose` electrons per pixel: exact Poisson sampling at low counts, Gaussian approximation above.
+ * Both use inverse-CDF sampling of one fixed uniform per pixel, so counts change smoothly with the clean image.
  * Returns intensity in the same units as I (counts / dose). Infinite dose = no noise.
  */
 export function addNoise(I, dose, seed = 1) {
   if (!isFinite(dose)) return I;
-  const rand = mulberry32(seed);
   const out = new Float64Array(I.length);
   for (let i = 0; i < I.length; i++) {
     const lam = Math.max(I[i], 0) * dose;
+    const u = hashUniform(seed, i);
     let n;
     if (lam < 30) {
-      // Knuth's multiplication method
-      const L = Math.exp(-lam);
-      let prod = rand();
+      let p = Math.exp(-lam);
+      let cdf = p;
       n = 0;
-      while (prod > L) {
+      while (u > cdf && n < 200) {
         n++;
-        prod *= rand();
+        p *= lam / n;
+        cdf += p;
       }
     } else {
-      const u1 = Math.max(rand(), 1e-12);
-      const u2 = rand();
-      n = Math.max(0, lam + Math.sqrt(lam) * Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2));
+      n = Math.max(0, lam + Math.sqrt(lam) * normInv(u));
     }
     out[i] = n / dose;
   }
@@ -341,6 +357,14 @@ export function inductionFromPhase(phase) {
     }
   }
   return { bx, by };
+}
+
+/** Background phase level: mean of the border pixels (uniform film there), or 0 for a helix, which fills the whole field. */
+export function phaseBackground(texture, phase) {
+  if (texture === "helix") return 0;
+  let s = 0;
+  for (let k = 0; k < N; k++) s += phase[k] + phase[(N - 1) * N + k] + phase[k * N] + phase[k * N + N - 1];
+  return s / (4 * N);
 }
 
 /** Full forward simulation and reconstruction. */
@@ -575,7 +599,7 @@ function render({ model, el }) {
         <input type="range" data-k="radius" min="25" max="110" step="1">
       </label>
       <label>Sample tilt <span class="ltem-val" data-v="tilt"></span>
-        <input type="range" data-k="tilt" min="-35" max="35" step="1">
+        <input type="range" data-k="tilt" min="-${MAX_TILT_DEG}" max="${MAX_TILT_DEG}" step="1">
       </label>
       <label>Defocus Δf <span class="ltem-val" data-v="defocus"></span>
         <input type="range" data-k="defocus" min="-2000" max="2000" step="25">
@@ -643,21 +667,26 @@ function render({ model, el }) {
       state.logDose >= NOISE_FREE ? "noise-free" : `${dose < 10 ? dose.toFixed(dose < 1 ? 2 : 1) : Math.round(dose).toLocaleString()} e⁻/px`;
   }
 
-  // Fixed phase display range per texture: from the default (untilted, Bloch) configuration, with some headroom.
-  const phaseScale = {};
-  function phaseRange(texture) {
-    if (!phaseScale[texture]) {
-      const ref = magneticPhase(makeTexture({ texture, radius: DEFAULT_RADIUS[texture] || 60e-9, helicity: Math.PI / 2 }), 0);
-      let lo = Infinity;
-      let hi = -Infinity;
-      for (let i = 0; i < N * N; i++) {
-        if (ref[i] < lo) lo = ref[i];
-        if (ref[i] > hi) hi = ref[i];
+  // Phase display: centered on the background level, with a fixed symmetric span per texture. A Bloch skyrmion's phase is a
+  // one-sided bump, so a [min, max] range would clip antisymmetric phases (tilted Néel skyrmions, helices) on one side.
+  const phaseSpan = {};
+  function phaseRange(texture, phase) {
+    if (!phaseSpan[texture]) {
+      // Largest deviation from background over the default size: untilted Bloch, and Bloch and Néel at the maximum tilt.
+      let dev = 0;
+      for (const [helicity, tilt] of [
+        [Math.PI / 2, 0],
+        [Math.PI / 2, MAX_TILT],
+        [0, MAX_TILT],
+      ]) {
+        const ref = magneticPhase(makeTexture({ texture, radius: DEFAULT_RADIUS[texture] || 60e-9, helicity }), tilt);
+        const bg = phaseBackground(texture, ref);
+        for (let i = 0; i < N * N; i++) dev = Math.max(dev, Math.abs(ref[i] - bg));
       }
-      const pad = 0.1 * (hi - lo);
-      phaseScale[texture] = [lo - pad, hi + pad];
+      phaseSpan[texture] = 1.05 * dev;
     }
-    return phaseScale[texture];
+    const bg = phaseBackground(texture, phase);
+    return [bg - phaseSpan[texture], bg + phaseSpan[texture]];
   }
 
   // Expensive stages are cached by the parameters they depend on.
@@ -697,7 +726,7 @@ function render({ model, el }) {
       if (phase[i] < pmin) pmin = phase[i];
       if (phase[i] > pmax) pmax = phase[i];
     }
-    const [plo, phiHi] = phaseRange(state.texture);
+    const [plo, phiHi] = phaseRange(state.texture, phase);
     drawGray(ctx.phase, phase, plo, phiHi);
     const range = pmax - pmin;
     ctx.phase.save();

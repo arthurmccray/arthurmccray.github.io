@@ -1134,7 +1134,7 @@ The theme offers several options for customizing how publications are displayed:
 
 ```yaml
 enable_publication_thumbnails: true
-max_author_limit: 3
+max_author_limit: 10
 more_authors_animation_delay: 10
 ```
 

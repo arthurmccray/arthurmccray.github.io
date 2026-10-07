@@ -16,8 +16,6 @@ ptychographic imaging conditions (large semiangle, overlapping disks).
 
 <script type="module" src="{{ '/assets/js/widgets/mount.js' | relative_url }}"></script>
 
-<p class="text-muted small mt-2">Interactive widget by <a href="https://colab.stanford.edu">Colin Ophus</a>, from the
-<a href="https://colab.stanford.edu/interactive">Ophus Lab website</a>.</p>
 
 ## What is 4D-STEM?
 

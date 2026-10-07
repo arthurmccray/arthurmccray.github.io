@@ -2,7 +2,7 @@
 layout: page
 permalink: /software/
 title: software
-description: Open-source tools for electron microscopy.
+description: Open-source tools for scientific computing.
 nav: true
 nav_order: 4
 ---

@@ -149,7 +149,7 @@ cv:
     Skills:
       - name: Machine learning
         icon: fa-solid fa-brain
-        keywords: "vision transformers, multimodal foundation models, masked autoencoder pretraining, self-supervised learning, inverse problems, implicit neural representations, deep generative priors and diffusion models, CNNs, differentiable programming, iterative reconstruction and optimization"
+        keywords: "vision transformers, multimodal foundation models, self-supervised learning, inverse problems, implicit neural representations, deep generative priors and diffusion models, CNNs, differentiable programming, iterative reconstruction and optimization"
       - name: Software
         icon: fa-solid fa-code
         keywords: "Python (NumPy, SciPy, scikit-learn), PyTorch, CUDA and JAX (working knowledge), package design and distribution, testing and CI, open-source maintenance"

@@ -43,11 +43,11 @@ machine-learning development of [quantEM](https://github.com/electronmicroscopy/
 microscopy.
 
 I did my Ph.D. in Applied Physics at Northwestern University and Argonne National Laboratory with Amanda Petford-Long and Charudatta Phatak.
-There I used Lorentz transmission electron microscopy to study magnetic skyrmions and other spin textures in van der Waals magnets, and wrote
-[PyLorentz](https://github.com/PyLorentz/PyLorentz), a Python package for Lorentz TEM simulation and phase reconstruction. Before that, I
+I used Lorentz transmission electron microscopy and computational methods to study magnetic skyrmions and other spin textures in van der Waals magnets. I
+also wrote [PyLorentz](https://github.com/PyLorentz/PyLorentz), a Python package for Lorentz TEM simulation and phase reconstruction. Before that, I
 studied physics at Carleton College.
 
-Want to see how some of this works? Try the [interactive demos]({{ '/interactive/' | relative_url }}), which run electron microscopy
+Want to learn more? Check out the [interactive demos]({{ '/interactive/' | relative_url }}), which run electron microscopy
 simulations and reconstructions live in your browser.
 
 <div data-widget="spin-field"></div>

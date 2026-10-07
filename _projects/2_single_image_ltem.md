@@ -15,10 +15,10 @@ category: research
 <a href="https://doi.org/10.1063/5.0197138">Simulation-trained machine learning models for Lorentz transmission electron microscopy</a>,
 <em>APL Machine Learning</em> (2024)</p>
 
-Fresnel-mode Lorentz TEM makes magnetic domain walls and skyrmions visible by imaging out of focus, but on its own it is only qualitative. To
-get quantitative information, such as the integrated magnetic induction, you have to recover the electron phase shift. That is normally done
-with the transport-of-intensity equation (TIE) and a through-focal series of three images. Acquiring the series is slow, sensitive to drift,
-and impractical for in situ experiments where the sample is changing.
+Fresnel-mode Lorentz TEM makes magnetic domain walls and skyrmions visible by imaging out of focus, but the tecnique is primarily qualitative. To
+get quantitative information, or to make maps of the integrated magnetic induction, you have to recover the electron phase shift. That is normally done
+with the transport-of-intensity equation (TIE) and a through-focal series of three (or more) images. Acquiring the TFS is slow, sensitive to drift,
+and impractical for in situ experiments where the sample is changing. 
 
 ## Single-image phase retrieval (SIPRAD)
 
@@ -52,9 +52,11 @@ induction. (e, f) Single-image TIE. (g, h) TIE from a full through-focal series.
 
 ## Simulation-trained networks
 
-The second approach goes the other way: a pipeline of micromagnetic simulations and realistic LTEM image simulation generates large labeled
-training sets, so that networks such as SkyrmNet can segment skyrmions in experimental images. That makes it possible to analyze
-thousands of skyrmions statistically instead of a handful by hand.
+In some cases, however we are not interested in the integrated induction but in quantitatively measuring specific magnetic features. Conventional
+large-scale segmentation models (such as Segment Anything) struggle with magnetic contrast patterns and cannot be used for this imaging mode. 
+Building on the PyLorentz code, we developed a pipeline of micromagnetic simulations and realistic LTEM image simulation in order to generate large labeled
+training sets, so that neural networks can accurately segment skyrmions in experimental images. That enablese large-scale statistical studies of skyrmions
+which would not be viable (or accurate) when segmenting by hand. 
 
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 mt-3 mt-md-0">
@@ -63,7 +65,7 @@ thousands of skyrmions statistically instead of a handful by hand.
 </div>
 <div class="caption">
 Training a network on simulated data. Material parameters drive MuMax3 micromagnetic simulations. The resulting magnetization maps give
-the ground-truth labels and, together with the imaging conditions, simulated LTEM training images (PyLorentz). The trained network is then
+the ground-truth labels and, together with the imaging conditions, simulated LTEM training images (PyLorentz). The trained network can be
 applied directly to experimental images.
 </div>
 

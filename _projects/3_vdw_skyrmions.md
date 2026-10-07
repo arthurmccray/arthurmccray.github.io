@@ -15,10 +15,10 @@ category: research
 <a href="https://doi.org/10.1002/adfm.202214203">Direct observation of magnetic bubble lattices and magnetoelastic effects in van der Waals Cr₂Ge₂Te₆</a>,
 <em>Advanced Functional Materials</em> (2023)</p>
 
-Layered van der Waals ferromagnets like Fe₃GeTe₂ (FGT) and Cr₂Ge₂Te₆ (CGT) host magnetic skyrmions and bubbles, which are topologically
-protected spin textures, and they can be exfoliated, stacked, and strained in ways bulk magnets cannot. Most of them order only below room
-temperature, so during my Ph.D. at Northwestern and Argonne I used cryogenic (LN₂ and LHe) and in situ Lorentz TEM to watch these textures
-form, order, and respond to temperature, field, and strain.
+Layered van der Waals (vdW) ferromagnets like Fe₃GeTe₂ (FGT) and Cr₂Ge₂Te₆ (CGT) host magnetic skyrmions and bubbles, which are topologically
+protected spin textures. As vdW materials, they can be exfoliated, stacked, and strained in ways bulk magnets cannot. Most of them order only below room
+temperature, so during my Ph.D. at Northwestern and Argonne I used cryogenic (LN₂ and LHe) and in situ Lorentz TEM to study how these textures
+form, order, and respond to changing temperature, field, and strain.
 
 ## Néel skyrmion lattices in Fe₃GeTe₂
 
@@ -39,25 +39,10 @@ skyrmion lattice forming. (e, f) Magnified region and its reconstructed in-plane
 
 ## Bubble lattices and magnetostriction in Cr₂Ge₂Te₆
 
-In CGT, field-cooling produces lattices of magnetic bubbles, which can be either homochiral or of mixed chirality after identical cooling
+In CGT, field-cooling produces lattices of Bloch-type magnetic bubbles, which can be either homochiral or of mixed chirality after identical cooling
 procedures in the same region of the flake. CGT's large thermal expansion on cooling also let us directly observe magnetoelastic coupling:
-strain in the flake aligns the stripe domains.
+strain in the flake aligns the magnetic stripe domains.
 
-<div class="row justify-content-sm-center">
-<div class="col-sm-11 mt-3 mt-md-0">
-{% include figure.liquid loading="eager" path="assets/img/projects/cgt_bubble_chirality.jpg" class="img-fluid rounded" zoomable=true %}
-</div>
-</div>
-<div class="caption">
-Magnetic bubbles of different chirality in a CGT flake. (a, b) TIE-reconstructed phase images of the same region after two identical
-field-cooling procedures, giving a homochiral lattice in one case and a mixed-chirality lattice in the other. (c, d) Integrated magnetic
-induction maps of the boxed regions, with chirality indicated by the arrows.
-</div>
-
-Which lattice forms is stochastic. We could not select it with the applied field or the cooling rate, and when both types appeared in the
-same flake after one cooling run they were almost always separated by large disruptions such as wrinkles. The one exception was a
-homochiral lattice and a mixed-chirality lattice meeting at a single extended defect. That arrangement did not repeat: later field-cooling
-runs with the same parameters produced one lattice type extending across the defect.
 
 <div class="row justify-content-sm-center">
 <div class="col-sm-11 mt-3 mt-md-0">

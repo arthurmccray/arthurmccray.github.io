@@ -12,25 +12,21 @@ nav: false
 
 <script type="module" src="{{ '/assets/js/widgets/mount.js' | relative_url }}"></script>
 
-<p class="text-muted small mt-2">Interactive widget by <a href="https://colab.stanford.edu">Colin Ophus</a>, from the
-<a href="https://colab.stanford.edu/interactive-ptycho">Ophus Lab website</a>.</p>
-
 ## How the measurement works
 
-A focused electron probe illuminates a small region of the sample. Because the probe is intentionally defocused, neighboring scan positions
-overlap strongly, and every region of the sample is measured many times from slightly different illumination conditions. At each of the 15 by
+A focused electron probe illuminates a small region of the sample. The probe is intentionally defocused so that neighboring scan positions
+overlap, and every region of the sample is measured many times from slightly different illumination conditions. At each of the 15 by
 15 scan positions we record the far-field diffraction pattern, giving a four-dimensional dataset: two scan dimensions and two diffraction
 dimensions.
 
 The simulation uses a 300 kV beam, an adjustable convergence semiangle (10 to 40 mrad), and a strongly defocused probe (200 Å of overfocus to
 200 Å of underfocus). Larger convergence angles reach higher scattering angles and sharpen the depth resolution; more defocus spreads the
 illumination over more of the sample. The sample is a five-fold twinned decahedral nanoparticle embedded in an amorphous carbon substrate.
-Every diffraction pattern is computed live with the multislice algorithm, which alternates between transmission through each thin slice and
-Fresnel propagation between slices.
+Every diffraction pattern is computed live with the multislice algorithm for the given probe conditions.
 
 ## How the reconstruction works
 
-Ptychography recovers the sample from the recorded intensities alone. We parameterize the object as a stack of complex slices and use the
+Ptychography recovers the complex-valued object and probe from the recorded diffraction intensities alone. We parameterize the object as a stack of complex slices and use the
 same multislice model in the forward direction, comparing the modeled far-field intensity against the measurement.
 
 The solver minimizes the amplitude error between modeled and measured diffraction patterns using mini-batch gradient descent. Each iteration:
@@ -54,5 +50,5 @@ multislice model. This improves noise robustness, convergence speed, and depth r
 [Read more about the project]({{ '/projects/1_deep_priors_ptychography/' | relative_url }}) or see the
 [paper on arXiv](https://doi.org/10.48550/arXiv.2511.07795).
 
-To work through these algorithms yourself, see the quantEM
+To run these algorithms yourself, see the quantEM
 [diffractive imaging tutorials](https://github.com/electronmicroscopy/quantem-tutorials/tree/main/tutorials/diffractive_imaging).

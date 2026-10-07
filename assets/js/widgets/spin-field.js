@@ -35,7 +35,7 @@ function render({ model, el }) {
   const caption = document.createElement("div");
   caption.style.cssText = "font-size: 0.8rem; opacity: 0.65; margin-top: 0.35rem;";
   caption.innerHTML =
-    "Each arrow is a magnetic moment. Move your cursor to push a <a href='https://en.wikipedia.org/wiki/Magnetic_skyrmion'>skyrmion</a> through the film, and click to leave it behind. Squeeze two together and they merge; double-click to remove one.";
+    "Each arrow is a magnetic moment. Move your cursor to push a <a href='https://en.wikipedia.org/wiki/Magnetic_skyrmion'>skyrmion</a> through the film, and click to leave it behind.";
   wrap.appendChild(canvas);
   wrap.appendChild(caption);
   el.appendChild(wrap);

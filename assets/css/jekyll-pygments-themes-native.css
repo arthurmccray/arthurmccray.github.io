@@ -52,7 +52,11 @@
 } /* Generic.Output */ /* Generic.Prompt */ /* Generic.Strong */ /* Generic.Subheading */
 .highlight .gt {
   color: #d22323;
-} /* Generic.Traceback */ /* Keyword.Constant */ /* Keyword.Declaration */ /* Keyword.Namespace */ /* Keyword.Pseudo */ /* Keyword.Reserved */
+} /* Generic.Traceback */ /* Keyword.Constant */ /* Keyword.Declaration */
+.highlight .kn {
+  color: #6ab825;
+  font-weight: bold;
+} /* Keyword.Namespace */ /* Keyword.Pseudo */ /* Keyword.Reserved */
 .highlight .kt {
   color: #6ab825;
   font-weight: bold;

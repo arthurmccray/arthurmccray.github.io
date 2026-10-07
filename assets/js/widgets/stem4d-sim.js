@@ -338,12 +338,19 @@ function renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, 
 
   ctx.save();
   const imgW = dpCanvas.width, imgH = dpCanvas.height;
-  const ta = (c1.sx - c0.sx) / imgW, tb = (c1.sy - c0.sy) / imgW;
-  const tc = (c3.sx - c0.sx) / imgH, td = (c3.sy - c0.sy) / imgH;
-  ctx.setTransform(ta, tb, tc, td, c0.sx, c0.sy);
-  ctx.globalAlpha = 0.92;
-  ctx.drawImage(dpCanvas, 0, 0);
-  ctx.globalAlpha = 1;
+  // A single affine map would draw a parallelogram, but the perspective projection of the DP plane is a trapezoid. Draw the
+  // image as horizontal strips, each mapped from its own projected edges (rows project to horizontal lines at azimuth 0).
+  // Each strip overlaps the next by one source row to avoid antialiasing seams, so it is drawn opaque.
+  const K = 32, sh = imgH / K;
+  for (let j = 0; j < K; j++) {
+    const ya = probeY - dpHalf + (j / K) * dpSize, yb = probeY - dpHalf + ((j + 1) / K) * dpSize;
+    const a = proj(probeX - dpHalf, ya, zDP, view);
+    const b = proj(probeX + dpHalf, ya, zDP, view);
+    const d = proj(probeX - dpHalf, yb, zDP, view);
+    ctx.setTransform((b.sx - a.sx) / imgW, (b.sy - a.sy) / imgW, (d.sx - a.sx) / sh, (d.sy - a.sy) / sh, a.sx, a.sy);
+    const rows = Math.min(sh + 1, imgH - j * sh);
+    ctx.drawImage(dpCanvas, 0, j * sh, imgW, rows, 0, 0, imgW, rows);
+  }
   ctx.setTransform(1,0,0,1,0,0);
   ctx.restore();
 
@@ -359,9 +366,8 @@ function renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, 
   ctx.drawImage(atomLayer, 0, 0);
 
   // ---- Draw probe cone ----
-  // Affine center: the transform maps pixel (imgW/2, imgH/2) to this screen point
-  const dpCenterSx = c0.sx + (c1.sx - c0.sx) / 2 + (c3.sx - c0.sx) / 2;
-  const dpCenterSy = c0.sy + (c1.sy - c0.sy) / 2 + (c3.sy - c0.sy) / 2;
+  // With the perspective-correct DP above, its visual center is the projected center (no offset for the cone).
+  const { sx: dpCenterSx, sy: dpCenterSy } = proj(probeX, probeY, zDP, view);
   drawProbeCone(ctx, view, probeX, probeY, qMax, defocus, dpSize, zDP, zBeamSrc, halfZ, cropSize, pixelSize, dpCenterSx, dpCenterSy);
 
   // ---- Two inset panels on the right ----

@@ -87,6 +87,12 @@ cv:
           - Widely adopted Python codebase for Lorentz TEM simulation, phase reconstruction, and ML-based analysis.
           - Sole author and maintainer since 2020, covering architecture, documentation, releases, and user support.
 
+      - name: "emdatabase: co-developer"
+        url: https://github.com/electronmicroscopy/emdatabase
+        highlights:
+          - Python package and index for downloading electron microscopy datasets and model weights from anywhere they are publicly hosted, so notebooks and published results can be shared and reproduced with their data.
+          - Co-developed with Carter Francis, who started the project; completed the implementation and its integration.
+
     Honors and Awards:
       - title: Postdoctoral Scholar Award
         awarder: Microscopy and Microanalysis Conference

@@ -6,6 +6,11 @@ on:
     - cron: "30 23 * * *"
   workflow_dispatch:
 
+# contents: push the moved posts; actions: start the deploy (a push made with GITHUB_TOKEN does not trigger other workflows)
+permissions:
+  contents: write
+  actions: write
+
 jobs:
   publish_scheduled:
     runs-on: ubuntu-latest
@@ -23,6 +28,7 @@ jobs:
         run: |
           echo "Today is $TODAY"
           shopt -s nullglob
+          mkdir -p _posts
           for file in _scheduled/${TODAY}-*.md; do
             echo "Found scheduled: $file"
             mv "$file" "_posts/"
@@ -35,5 +41,15 @@ jobs:
           git config user.email "actions@github.com"
           git add _posts/
           git add _scheduled/
-          git commit -m "Posted Scheduled Drafts on $TODAY" || echo "No changes to commit"
-          git push
+          if git commit -m "Posted Scheduled Drafts on $TODAY"; then
+            git push
+            echo "PUBLISHED=true" >> $GITHUB_ENV
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Deploy the site
+        if: env.PUBLISHED == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main

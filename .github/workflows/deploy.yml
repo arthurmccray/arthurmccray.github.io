@@ -60,6 +60,12 @@ on:
 permissions:
   contents: write
 
+# One deploy per branch at a time; a newer push cancels an older in-progress run, so an older build can't finish last and
+# overwrite gh-pages with stale content.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
     # available images: https://github.com/actions/runner-images#available-images

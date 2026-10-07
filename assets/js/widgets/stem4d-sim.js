@@ -314,7 +314,7 @@ function renderAtomLayer(W, H, atoms, view) {
   return layer;
 }
 
-function renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, dpCanvas, probeCanvas, dpSize, cropSize, pixelSize, cellDimZ) {
+function renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, dpCanvas, probeCanvas, dpSize, cropSize, pixelSize, cellDimZ, probeLabel) {
   ctx.clearRect(0,0,W,H);
   ctx.fillStyle = "#080808";
   ctx.fillRect(0,0,W,H);
@@ -384,6 +384,7 @@ function renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, 
   ctx.fillRect(insetX + 8, probeY1 + insetSize - 12, barPx, 3);
   ctx.font = "12px -apple-system, sans-serif";
   ctx.fillText("10 Å", insetX + 8, probeY1 + insetSize - 17);
+  ctx.fillText(probeLabel, insetX + 8, probeY1 + 18);
   ctx.fillStyle = "rgba(0,255,136,0.6)";
   ctx.font = "16px -apple-system, sans-serif";
   ctx.fillText("Probe (real space)", insetX, probeY1 + insetSize + labelH);
@@ -684,10 +685,12 @@ function render({ model, el }) {
 
     function updateQMaxLabel() {
       const mrad = qMax * lambda * 1000;
+      qmaxVal.textContent = `${qMax.toFixed(2)} Å⁻¹ (${mrad.toFixed(1)} mrad)`;
       const fwhm = probeFWHM(probe, cropSize, pixelSize);
-      qmaxVal.textContent = `${qMax.toFixed(2)} Å⁻¹ (${mrad.toFixed(1)} mrad) · probe ≈ ${fwhm < 1 ? fwhm.toFixed(2) : fwhm.toFixed(1)} Å FWHM`;
+      probeLabel = `FWHM ≈ ${fwhm < 1 ? fwhm.toFixed(2) : fwhm.toFixed(1)} Å`; // drawn in the probe inset
     }
 
+    let probeLabel = "";
     let probeNeedsRender = true; // flag to re-render probe inset only when sliders change
 
     function renderAll() {
@@ -697,7 +700,7 @@ function render({ model, el }) {
       }
       const intensity = computeDiffraction(potential, imW, imH, probe.probeRe, probe.probeIm, probeX, probeY, cropSize, pixelSize);
       renderDPtoCanvas(dpOffscreen, intensity, cropSize, gamma);
-      renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, dpOffscreen, probeOffscreen, dpSize, cropSize, pixelSize, cellDimZ);
+      renderScene(ctx, W, H, atomLayer, view, probeX, probeY, qMax, defocus, dpOffscreen, probeOffscreen, dpSize, cropSize, pixelSize, cellDimZ, probeLabel);
     }
 
     // Coalesce slider input to one render per animation frame

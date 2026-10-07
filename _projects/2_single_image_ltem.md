@@ -58,12 +58,23 @@ thousands of skyrmions statistically instead of a handful by hand.
 
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 mt-3 mt-md-0">
-{% include figure.liquid loading="eager" path="assets/img/projects/skyrmnet.jpg" class="img-fluid rounded" zoomable=true %}
+{% include figure.liquid loading="eager" path="assets/img/projects/skyrmnet_workflow.png" class="img-fluid rounded fig-white" zoomable=true %}
 </div>
 </div>
 <div class="caption">
-SkyrmNet on simulated data. (a) Magnetization of a Néel skyrmion lattice and (b) its ground-truth label. (c, e, g) LTEM images with
-increasing noise, and (d, f, h) SkyrmNet segmentation overlaid on each.
+Training a network on simulated data. Material parameters drive MuMax3 micromagnetic simulations. The resulting magnetization maps give
+the ground-truth labels and, together with the imaging conditions, simulated LTEM training images (PyLorentz). The trained network is then
+applied directly to experimental images.
+</div>
+
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 mt-3 mt-md-0">
+{% include figure.liquid loading="eager" path="assets/img/projects/skyrmnet_fgt.jpg" class="img-fluid rounded" zoomable=true %}
+</div>
+</div>
+<div class="caption">
+A simulation-trained network applied to experimental LTEM images of a dense Néel skyrmion lattice in Fe₃GeTe₂. Left: full field of view
+at 188 K. Top row: the boxed region as the sample cools from 188 K to 100 K. Bottom row: the skyrmions identified by the network (red).
 </div>
 
 The tools are available in [PyLorentz](https://github.com/PyLorentz/PyLorentz). To build intuition for how magnetic textures appear in LTEM,

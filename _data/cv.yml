@@ -1,189 +1,166 @@
 cv:
-  name: Albert Einstein
-  label: Scientist
-  email: einstein@example.com
-  location: Princeton, NJ
-  image: ""
-  summary: A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time
+  name: Arthur R. C. McCray
+  label: Postdoctoral Scholar, Stanford University
+  email: arthurmccray95@gmail.com
+  location: San Francisco Bay Area, CA
+  website: https://arthurmccray.github.io
+  summary: >
+    Research scientist working at the intersection of machine learning and electron microscopy. I build self-supervised and
+    physics-informed methods for inverse problems in scientific imaging (deep generative priors, implicit neural representations, and
+    differentiable forward models) and ship them as open-source tools used across the field. Recent work produced >10× faster and 40%
+    higher-resolution ptychographic reconstructions, secured $1.2M in funding from Toyota Research Institute, and is being transferred into
+    semiconductor metrology workflows.
 
   social_networks:
-    - network: X
-      username: AlbertEinstein
     - network: GitHub
-      username: example
+      username: arthurmccray
     - network: LinkedIn
-      username: example
-
-  address:
-    street: 2712 Broadway St
-    city: San Francisco
-    region: California
-    postalCode: CA 94115
-    countryCode: US
+      username: arthur-mccray-6200a9ab
+    - network: ORCID
+      username: 0000-0001-6077-4698
 
   sections:
     Education:
-      - institution: University of Zurich
-        location: Zurich, Switzerland
-        url: https://www.uzh.ch/
-        area: Physics
-        studyType: PhD
-        start_date: 1900
-        end_date: 1905
-        score: ""
-        courses: "Theory of Relativity"
+      - institution: Northwestern University
+        location: Evanston, IL
+        url: https://www.northwestern.edu/
+        area: Applied Physics
+        studyType: Ph.D.
+        start_date: 2018
+        end_date: 2023
         highlights:
-          - Description 1.
-          - Description 2.
+          - "Thesis: *Observing and Understanding Complex Magnetic Spin Textures with Lorentz Microscopy*"
+          - "Advisor: Amanda Petford-Long"
 
-      - institution: Eidgenössische Technische Hochschule
-        location: Zurich, Switzerland
+      - institution: Carleton College
+        location: Northfield, MN
+        url: https://www.carleton.edu/
         area: Physics
-        studyType: Federal teaching diploma
-        start_date: 1896
-        end_date: 1900
+        studyType: B.A., cum laude
+        date: 2018
         highlights:
-          - Description 1.
-          - Description 2.
+          - Graduated with Distinction for the Senior Integrative Exercise
 
     Experience:
-      - company: Institute for Advanced Study, Princeton University
-        position: Professor of Theoretical Physics
-        location: Princeton University, NJ
-        start_date: 1933
-        end_date: 1955
-        summary: Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.
+      - company: Stanford University
+        position: "Postdoctoral Scholar: Ophus Group"
+        location: Stanford, CA
+        start_date: 2024-09
         highlights:
-          - Relativity
-          - Description 2.
+          - Proposed and demonstrated a self-supervised deep-prior framework for solving inverse problems in (S)TEM, now a reusable approach underpinning projects in ptychography, tomography, and crystallography. Supervise extensions of the method by three graduate students and two postdocs, with collaborations at SLAC, UC Berkeley, and the Technion.
+          - Initiated and led the first application of this framework to electron ptychography, achieving a >10× speedup and 40% resolution improvement over state-of-the-art ML and iterative baselines.
+          - Led the technical contributions behind a $1.2M award from Toyota Research Institute for Deep Material Priors, a program building physics-aware foundation models for materials characterization.
+          - Developed whole-pattern-fitting methods for improved strain mapping, now being adopted for semiconductor metrology workflows at Samsung.
+          - Created [quantEM](https://github.com/electronmicroscopy/quantem), an open-source library for quantitative electron microscopy, and lead its ptychography and machine learning development.
 
-      - company: California Institute of Technology
-        position: Visiting Professor
-        location: Pasadena, California, US
-        start_date: 1933
-        end_date: 1933
+      - company: Lawrence Berkeley National Laboratory
+        position: "Postdoctoral Scholar: National Center for Electron Microscopy (NCEM)"
+        location: Berkeley, CA
+        start_date: 2024-02
+        end_date: 2024-09
         highlights:
-          - Description 1.
-          - Description 2.
+          - Developed machine learning methods for 4D-STEM analysis in the group of Colin Ophus; continued the same research program upon the group's move to Stanford.
 
-      - company: Kaiser Wilhelm Institute for Physics
-        position: Director
-        location: Berlin, Germany
-        start_date: 1917
-        end_date: 1933
-
-      - company: Karl-Ferdinand University
-        position: Professor of Theoretical Physics
-        location: Prague, Czechoslovakia
-        start_date: 1911
-        end_date: 1917
-
-      - company: University of Zurich
-        position: Associate Professor of Theoretical Physics
-        location: Zurich, Switzerland
-        start_date: 1909
-        end_date: 1911
-
-    Volunteer:
-      - company: People's Climate March
-        position: Lead Organizer
-        location: Zurich, Switzerland
-        start_date: 2014-04-01
-        end_date: 2015-07-01
-        summary: Lead organizer for the New York City branch of the People's Climate March, the largest climate march in history.
+      - company: Argonne National Laboratory / Northwestern University
+        position: "Graduate Research Assistant: Petford-Long and Phatak Groups"
+        location: IL
+        start_date: 2018
+        end_date: 2023
         highlights:
-          - "Awarded 'Climate Hero' award by Greenpeace for my efforts organizing the march."
-          - "Men of the year 2014 by Time magazine"
+          - Built a simulation and training pipeline for Lorentz TEM neural networks, enabling large-scale statistical studies of spin textures.
+          - Developed a self-supervised method for quantitative magnetic phase imaging from a single image, replacing the conventional through-focal series.
+          - Authored [PyLorentz](https://github.com/PyLorentz/PyLorentz), an open-source Python package for Lorentz TEM simulation and phase reconstruction now widely used in the magnetic-microscopy community.
+          - Designed and ran cryogenic and in-situ TEM experiments on van der Waals magnets.
+          - Collaborated across 10+ groups at national labs and universities, contributing analysis and imaging expertise to publications.
 
-    Awards:
-      - title: Nobel Prize in Physics
-        authors:
-          - "Royal Swedish Academy of Sciences"
-        date: 1921-11-01
-        awarder: Royal Swedish Academy of Sciences
-        url: https://www.nobelprize.org/prizes/physics/1921/einstein/biographical/
-        summary: The Nobel Prizes are five separate prizes that, according to Alfred Nobel's will of 1895, are awarded to 'those who, during the preceding year, have conferred the greatest benefit to humankind.'
+    Open Source Projects:
+      - name: "quantEM: core developer and package creator"
+        url: https://github.com/electronmicroscopy/quantem
+        highlights:
+          - Open-source Python library for quantitative electron microscopy.
+          - Developed the ptychography and machine learning modules; contributed core infrastructure (data structures, visualization, utilities, configuration) and [tutorials](https://github.com/electronmicroscopy/quantem-tutorials).
 
-      - title: Max Planck Medal
-        authors:
-          - "German Physical Society"
-        date: 2029
-        awarder: German Physical Society
-        summary: Awarded for outstanding scientific achievement
+      - name: "PyLorentz: sole developer and maintainer"
+        url: https://github.com/PyLorentz/PyLorentz
+        highlights:
+          - Widely adopted Python codebase for Lorentz TEM simulation, phase reconstruction, and ML-based analysis.
+          - Sole author and maintainer since 2020, covering architecture, documentation, releases, and user support.
+
+    Honors and Awards:
+      - title: Postdoctoral Scholar Award
+        awarder: Microscopy and Microanalysis Conference
+        date: 2025
+      - title: Student Scholar Award
+        awarder: Microscopy and Microanalysis Conference
+        date: 2022
+      - title: Editors' Suggestion
+        awarder: Physical Review Applied
+        date: 2021
+      - title: Best Poster
+        awarder: IEEE Magnetics Society & Nanotechnology Council, Chicago Section
+        date: 2019
+      - title: Distinction for Senior Integrative Exercise
+        awarder: Carleton College
+        date: 2018
 
     Publications:
-      - title: Zur Elektrodynamik bewegter Körper
-        authors:
-          - Albert Einstein
-        publisher: Annalen der Physik
-        releaseDate: 1905-06-30
-        url: https://en.wikisource.org/wiki/Translation:On_the_Electrodynamics_of_Moving_Bodies
-        summary: It concerned an interpretation of the Michelson–Morley experiment and the properties of light and time. Special relativity incorporates the principle that the speed of light is the same for all inertial observers regardless of the state of motion of the source.
+      - bullet: "24 peer-reviewed papers and preprints, including 8 as first author. See the [publications page](/publications/) or [Google Scholar](https://scholar.google.com/citations?user=BV5vrGgAAAAJ) for the full list."
 
-      - title: Über einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt
-        authors:
-          - Albert Einstein
-        publisher: Annalen der Physik
-        releaseDate: 1905-03-18
-        url: https://de.wikisource.org/wiki/Über_einen_die_Erzeugung_und_Verwandlung_des_Lichtes_betreffenden_heuristischen_Gesichtspunkt
-        summary: In the second paper, he applied the quantum theory to light to explain the photoelectric effect. In particular, he used the idea of light quanta (photons) to explain experimental results, but stressed the importance of the experimental results. The importance of his work on the photoelectric effect earned him the Nobel Prize in Physics in 1921.
+    Invited and Contributed Talks:
+      - bullet: "**Invited:** *Deep Priors and Self-Supervised Learning for Electron Ptychography and Beyond.* Microscopy and Microanalysis, Milwaukee, WI, 2026."
+      - bullet: "*Improving Iterative Ptychography with Generative Priors.* MRS Spring Meeting, Honolulu, HI, 2026."
+      - bullet: "**Invited:** *Improving Iterative Ptychography with Machine Learning.* Advanced Photon Source ptychography study group, 2025."
+      - bullet: "*Improving Iterative Ptychographic Reconstructions with Generative Neural Networks.* Microscopy and Microanalysis, Salt Lake City, UT, 2025."
+      - bullet: "*Deep Learning Model for Obtaining Spatially Resolved Pair Distribution Functions from 4D-STEM Data.* Microscopy and Microanalysis, Salt Lake City, UT, 2025."
+      - bullet: "**Invited:** *Solving Inverse Problems in TEM with Machine Learning.* SLAC Battery Center Seminar Series, 2025."
+      - bullet: "*ML-Enabled Single Image Magnetic Phase Reconstruction for Lorentz Transmission Electron Microscopy.* Microscopy and Microanalysis, Cleveland, OH, 2024."
+      - bullet: "*3D Magnetization Reconstruction for Lorentz Microscopy using Differential Programming.* Microscopy and Microanalysis, Minneapolis, MN, 2023."
+      - bullet: "*Behavior of Bubble Lattices in Cr₂Ge₂Te₆.* 67th MMM Conference, Minneapolis, MN, 2022."
+      - bullet: "**Invited:** *Evolution of Skyrmion Lattice Order in the van der Waals Ferromagnet Fe₃GeTe₂.* Microscopy and Microanalysis, Portland, OR, 2022."
+      - bullet: "*Simulation-Trained Machine Learning Models for Lorentz Microscopy.* Microscopy and Microanalysis, Portland, OR, 2022."
+      - bullet: "*Understanding Complex Magnetic Structures with Simulation-Assisted Lorentz Transmission Electron Microscopy.* Northwestern University Applied Physics Seminar, 2021."
+      - bullet: "**Invited:** *Convolutional Neural Networks for Image Processing.* Biomedical Engineering Seminar Series, University of Illinois Urbana-Champaign, 2021."
 
-      - title: Die Grundlage der allgemeinen Relativitätstheorie
-        authors:
-          - Albert Einstein
-        publisher: Annalen der Physik
-        releaseDate: 1916-03-20
-        url: https://de.wikisource.org/wiki/Die_Grundlage_der_allgemeinen_Relativitätstheorie
-        summary: The publication of the theory of general relativity made him internationally famous. He was professor of physics at the universities of Zurich (1909–1911) and Prague (1911–1912), before he returned to ETH Zurich (1912–1914).
+    Posters:
+      - bullet: "*Accelerating Ptychographic Phase Reconstructions with ML-Enabled Phase Unwrapping.* Microscopy and Microanalysis, Cleveland, OH, 2024."
+      - bullet: "*Control of Magnetic Skyrmions in an Exchange Biased van der Waals Ferromagnet.* Microscopy and Microanalysis, Minneapolis, MN, 2023."
+      - bullet: "*Cryogenic Lorentz Transmission Electron Microscopy of van der Waals Materials.* Joint Meeting of IEEE Magnetics Society & Nanotechnology Council, Chicago Section, 2022."
+      - bullet: "*Tailoring Magnetic Skyrmions in Multilayers by Anisotropy Engineering.* Joint Meeting of IEEE Magnetics Society & Nanotechnology Council, Chicago Section, 2019. (Best Poster)"
+      - bullet: "*Orientational Disorder in Epitaxially Connected Quantum Dot Solids.* Microscopy and Microanalysis, St. Louis, MO, 2017."
+
+    Teaching and Mentoring:
+      - bullet: "**Graduate student mentor, Stanford University (2024 – present)**: Day-to-day technical supervision of graduate students on ML and microscopy projects."
+      - bullet: "**Guest lecturer, Stanford University (Fall 2024, Spring 2025)**: MatSci 327: TEM Analysis and Simulation."
+      - bullet: "**Graduate teaching assistant, Northwestern University (2019, 2022)**: Physics and Materials Science & Engineering departments."
+      - bullet: "**Undergraduate teaching assistant, Carleton College (2016 – 2018)**: Physics department."
+
+    Outreach:
+      - bullet: "**Scientist of the Month (2020 – present)**: Volunteer scientist at the Lakeside School and the Evergreen School, Seattle."
+      - bullet: "**Stanford Science Pen-Pals (2024 – present)**"
+      - bullet: "**Mentorship Opportunities for Research Engagement (2019 – 2023)**: Northwestern University board member and REACH coordinator."
+      - bullet: "**Northwestern Prison Education Program (2020 – 2023)**"
+      - bullet: "**Future City mentor (2018 – 2020)**: Saint Athanasius Middle School."
+      - bullet: '**Invited outreach talk (2022)**: "High School to Physics PhD," [Open Gears Seminar](https://www.youtube.com/watch?v=qft41F8HrN8), Metea Valley High School.'
+
+    Professional Service:
+      - bullet: "**Journal referee**: npj Computational Materials; APL Machine Learning; Advanced Functional Materials; Microscopy & Microanalysis; Ultramicroscopy; Nanoscale Horizons; Journal of Applied Physics; Scientific Reports; IEEE Transactions on Magnetics; Digital Discovery."
 
     Skills:
-      - name: Physics
-        level: Master
-        icon: fa-solid fa-hashtag
-        keywords: "Quantum Mechanics, Quantum Computing, Quantum Information, Quantum Cryptography, Quantum Communication, Quantum Teleportation"
-
-    Languages:
-      - name: German
-        summary: "Native speaker"
-
-      - name: English
-        summary: "Fluent"
-
-    Interests:
-      - name: Physics
-        icon: fa-solid fa-tag
-        keywords: "Quantum Mechanics, Quantum Computing, Quantum Information, Quantum Cryptography, Quantum Communication, Quantum Teleportation"
-
-    Certificates:
-      - name: Machine Learning
-        date: 2018-01-01
-        issuer: Stanford University
-        icon: fa-solid fa-location-dot
-
-      - name: Quantum Computing
-        date: 2018-01-01
-        issuer: Stanford University
-        icon: fa-solid fa-tag
-
-      - name: Quantum Information
-        date: 2018-01-01
-        issuer: Stanford University
-        icon: fa-solid fa-envelope
-
-    Projects:
-      - name: Quantum Computing
-        summary: Quantum computing is the use of quantum-mechanical phenomena such as superposition and entanglement to perform computation. Computers that perform quantum computations are known as quantum computers.
-        highlights:
-          - Quantum Teleportation
-          - Quantum Cryptography
-        start_date: 2018-01-01
-        end_date: 2018-01-01
-
-    References:
-      - name: Professor John Doe
-        icon: fa-solid fa-laptop
-        reference: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit.
-
-      - name: Professor Jane Smith
-        icon: fa-solid fa-thumbtack
-        reference: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit.
+      - name: Machine learning
+        icon: fa-solid fa-brain
+        keywords: "self-supervised learning, inverse problems, implicit neural representations, deep generative priors and diffusion models, vision transformers and CNNs, differentiable programming, iterative reconstruction and optimization"
+      - name: Software
+        icon: fa-solid fa-code
+        keywords: "Python (NumPy, SciPy, scikit-learn), PyTorch, CUDA and JAX (working knowledge), package design and distribution, testing and CI, open-source maintenance"
+      - name: Systems
+        icon: fa-solid fa-server
+        keywords: "GPU training and profiling, distributed training, data pipelines for TB-scale imaging datasets, HPC (NERSC)"
+      - name: Simulation
+        icon: fa-solid fa-atom
+        keywords: "multislice electron scattering, micromagnetics (MuMax, OOMMF)"
+      - name: Microscopy
+        icon: fa-solid fa-microscope
+        keywords: "Lorentz TEM, HR(S)TEM, 4D-STEM, electron diffraction, cryo-TEM (LN₂ and LHe), in-situ biasing and heating, EDS, MPMS/SQUID, MOKE, XRR, SEM, AFM"
+      - name: Nanofabrication
+        icon: fa-solid fa-gears
+        keywords: "FIB patterning and lift-out, photolithography, sputtering, 2D-material exfoliation"

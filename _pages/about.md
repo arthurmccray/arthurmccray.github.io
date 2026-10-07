@@ -2,33 +2,49 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
+subtitle: Postdoctoral Scholar · <a href='https://colab.stanford.edu'>Ophus Group</a> · Stanford University
 
 profile:
   align: right
   image: prof_pic.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
-    <p>555 your office number</p>
-    <p>123 your address street</p>
-    <p>Your City, State 12345</p>
+    <p>Stanford University</p>
+    <p>Stanford, CA</p>
 
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 
 announcements:
-  enabled: true # includes a list of news items
+  enabled: false # includes a list of news items
   scrollable: true # adds a vertical scroll bar if there are more than 3 news items
   limit: 5 # leave blank to include all the news in the `_news` folder
 
 latest_posts:
-  enabled: true
+  enabled: false # turn on once there are blog posts
   scrollable: true # adds a vertical scroll bar if there are more than 3 new posts items
   limit: 3 # leave blank to include all the blog posts
 ---
 
-Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](https://www.reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
+I'm a research scientist working at the intersection of **machine learning and electron microscopy**. I build self-supervised and
+physics-informed methods for inverse problems in scientific imaging, including deep generative priors, implicit neural representations, and
+differentiable forward models. Then I ship them as open-source tools that other microscopists can use.
 
-Put your address / P.O. box / other info right below your picture. You can also disable any of these elements by editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_bibliography/papers.bib` and Jekyll will render your [publications page](/al-folio/publications/) automatically.
+I'm currently a postdoctoral scholar in [Colin Ophus](https://colab.stanford.edu)'s group at Stanford University, after starting with the
+group at the National Center for Electron Microscopy at Berkeley Lab. There, I developed a self-supervised deep-prior framework for (S)TEM
+inverse problems. Applied to electron ptychography, it gives reconstructions more than 10× faster and with 40% higher resolution than
+state-of-the-art baselines, and it now underpins projects in ptychography, tomography, and crystallography. I also lead the ptychography and
+machine-learning development of [quantEM](https://github.com/electronmicroscopy/quantem), an open-source library for quantitative electron
+microscopy.
 
-Link to your social media connections, too. This theme is set up to use [Font Awesome icons](https://fontawesome.com/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them.
+I did my Ph.D. in Applied Physics at Northwestern University and Argonne National Laboratory with Amanda Petford-Long and Charudatta Phatak.
+There I used Lorentz transmission electron microscopy to study magnetic skyrmions and other spin textures in van der Waals magnets, and wrote
+[PyLorentz](https://github.com/PyLorentz/PyLorentz), a Python package for Lorentz TEM simulation and phase reconstruction. Before that, I
+studied physics at Carleton College.
+
+Want to see how some of this works? Try the [interactive demos]({{ '/interactive/' | relative_url }}), which run electron microscopy
+simulations and reconstructions live in your browser.
+
+<div data-widget="spin-field"></div>
+
+<script type="module" src="{{ '/assets/js/widgets/mount.js' | relative_url }}"></script>

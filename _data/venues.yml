@@ -1,9 +1,67 @@
-"AJP":
-  url: https://aapt.scitation.org/journal/ajp
+"arXiv":
+  url: https://arxiv.org/
+  color: "#b31b1b"
+
+"J. Microsc.":
+  url: https://onlinelibrary.wiley.com/journal/13652818
+  color: "#2a6f97"
+
+"APL ML":
+  url: https://pubs.aip.org/aip/aml
+  color: "#7b2cbf"
+
+"npj Comput. Mater.":
+  url: https://www.nature.com/npjcompumats/
+  color: "#00695c"
+
+"Adv. Funct. Mater.":
+  url: https://onlinelibrary.wiley.com/journal/16163028
+  color: "#c05621"
+
+"Adv. Mater.":
+  url: https://onlinelibrary.wiley.com/journal/15214095
+  color: "#c05621"
+
+"Nano Lett.":
+  url: https://pubs.acs.org/journal/nalefd
+  color: "#1d4e89"
+
+"ACS Nano":
+  url: https://pubs.acs.org/journal/ancac3
+  color: "#1d4e89"
+
+"Phys. Rev. Appl.":
+  url: https://journals.aps.org/prapplied/
   color: "#00369f"
 
-"PhysRev":
-  url: https://journals.aps.org/
+"Phys. Rev. Res.":
+  url: https://journals.aps.org/prresearch/
+  color: "#00369f"
 
-"Vision":
-  color: "#009f36"
+"Microsc. Microanal.":
+  url: https://academic.oup.com/mam
+  color: "#4a7c59"
+
+"ICCP":
+  url: https://iccp-conference.org/
+  color: "#555555"
+
+"Nat. Commun.":
+  url: https://www.nature.com/ncomms/
+  color: "#00695c"
+
+"SPIE":
+  url: https://www.spiedigitallibrary.org/
+  color: "#555555"
+
+"APL Mater.":
+  url: https://pubs.aip.org/aip/apm
+  color: "#7b2cbf"
+
+"Cell Rep. Phys. Sci.":
+  url: https://www.cell.com/cell-reports-physical-science/
+  color: "#8a3b12"
+
+"JOM":
+  url: https://link.springer.com/journal/11837
+  color: "#555555"

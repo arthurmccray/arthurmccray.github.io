@@ -4,6 +4,8 @@ set -euo pipefail
 echo "Entry point script running"
 
 CONFIG_FILE=_config.yml
+# Local-only overlay that renders _scheduled/ posts at /preview/<name>/; never used by the deploy.
+PREVIEW_CONFIG=_config.preview.yml
 DOCKER_DESTINATION=/tmp/_site
 
 # Function to manage Gemfile.lock
@@ -34,15 +36,19 @@ start_jekyll() {
     manage_gemfile_lock
     ensure_bundle_deps
     mkdir -p "$DOCKER_DESTINATION"
-    bundle exec jekyll serve --watch --port=8080 --host=0.0.0.0 --livereload --verbose --trace --force_polling --destination "$DOCKER_DESTINATION" --config "$CONFIG_FILE" &
+    local config="$CONFIG_FILE"
+    [ -f "$PREVIEW_CONFIG" ] && config="$CONFIG_FILE,$PREVIEW_CONFIG"
+    bundle exec jekyll serve --watch --port=8080 --host=0.0.0.0 --livereload --verbose --trace --force_polling --destination "$DOCKER_DESTINATION" --config "$config" &
 }
 
 start_jekyll
 
 while true; do
-    inotifywait -q -e modify,move,create,delete $CONFIG_FILE
+    watched=("$CONFIG_FILE")
+    [ -f "$PREVIEW_CONFIG" ] && watched+=("$PREVIEW_CONFIG")
+    inotifywait -q -e modify,move,create,delete "${watched[@]}"
     if [ $? -eq 0 ]; then
-        echo "Change detected to $CONFIG_FILE, restarting Jekyll"
+        echo "Change detected to ${watched[*]}, restarting Jekyll"
         jekyll_pid=$(pgrep -f jekyll)
         kill -KILL $jekyll_pid
         start_jekyll

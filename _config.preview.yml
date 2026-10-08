@@ -1,0 +1,7 @@
+# Local preview only: bin/entry_point.sh (the Docker dev server) loads this after _config.yml; the deploy workflow does not.
+# Posts waiting in _scheduled/ render at /preview/<file-name>/, e.g. /preview/2026-10-09-emdatabase/. They stay off the blog index.
+collections:
+  scheduled:
+    output: true
+    permalink: /preview/:name/
+future: true # also render future-dated posts and previews locally

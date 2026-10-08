@@ -111,7 +111,10 @@ cv:
         date: 2018
 
     Publications:
-      - bullet: "24 peer-reviewed papers and preprints, including 8 as first author. See the [publications page](/publications/) or [Google Scholar](https://scholar.google.com/citations?user=BV5vrGgAAAAJ) for the full list."
+      # The gem renders a section titled "Publications" with its own template, which reads title/url/summary and ignores `bullet`.
+      - title: "Full publication list →"
+        url: /publications/
+        summary: "24 peer-reviewed papers and preprints, including 8 as first author. Also on [Google Scholar](https://scholar.google.com/citations?user=BV5vrGgAAAAJ)."
 
     Invited and Contributed Talks:
       - bullet: "**Invited:** *Deep Priors and Self-Supervised Learning for Electron Ptychography and Beyond.* Microscopy and Microanalysis, Milwaukee, WI, 2026."

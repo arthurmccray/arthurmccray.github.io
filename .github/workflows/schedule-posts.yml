@@ -2,8 +2,10 @@ name: Publish posts scheduled for today
 
 on:
   schedule:
-    # Run every day at 23:30 UTC or manually run
-    - cron: "30 23 * * *"
+    # 8:15 am Pacific every day. Cron is UTC only, so run at both 15:15 (PDT) and 16:15 (PST) UTC; the job continues only on the run
+    # where it is 8 am in Los Angeles. GitHub can start scheduled runs late by several minutes, sometimes longer.
+    - cron: "15 15 * * *"
+    - cron: "15 16 * * *"
   workflow_dispatch:
 
 # contents: push the moved posts; actions: start the deploy (a push made with GITHUB_TOKEN does not trigger other workflows)
@@ -20,11 +22,26 @@ jobs:
         with:
           ref: main
 
-      - name: Get the date for today
+      - name: Get the date for today (Pacific) and skip the off-DST run
         id: date
-        run: echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+        run: |
+          echo "TODAY=$(TZ=America/Los_Angeles date +'%Y-%m-%d')" >> $GITHUB_ENV
+          # Match the cron to the current offset rather than checking the hour, so a run that starts late still counts.
+          # A manual run always proceeds.
+          zone=$(TZ=America/Los_Angeles date +%Z)
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            if { [ "${{ github.event.schedule }}" = "15 15 * * *" ] && [ "$zone" = "PDT" ]; } ||
+               { [ "${{ github.event.schedule }}" = "15 16 * * *" ] && [ "$zone" = "PST" ]; }; then
+              echo "RUN=true" >> $GITHUB_ENV
+            else
+              echo "This cron is for the other offset (it is $zone now); skipping."
+            fi
+          else
+            echo "RUN=true" >> $GITHUB_ENV
+          fi
 
       - name: Check for scheduled posts and move to posts
+        if: env.RUN == 'true'
         run: |
           echo "Today is $TODAY"
           shopt -s nullglob
@@ -36,6 +53,7 @@ jobs:
           done
 
       - name: Commit and push changes
+        if: env.RUN == 'true'
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"

@@ -1,0 +1,199 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> emdatabase: example data for electron microscopy | Arthur R. C. McCray </title> <meta name="author" content="Arthur R. C. McCray"> <meta name="description" content="A central index for downloading electron microscopy datasets and model weights from wherever they're hosted."> <meta name="keywords" content="electron microscopy, machine learning, vision transformers, multimodal foundation models, deep generative priors, self-supervised learning, ptychography, Lorentz TEM, 4D-STEM, inverse problems, quantEM, PyLorentz"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 930px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%F0%9F%94%AC&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://arthurmccray.github.io/blog/2026/emdatabase/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav sticky-bottom-footer"> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> <span class="font-weight-bold">Arthur</span> R. C. McCray </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/">publications </a> </li> <li class="nav-item "> <a class="nav-link" href="/projects/">projects </a> </li> <li class="nav-item "> <a class="nav-link" href="/software/">software </a> </li> <li class="nav-item "> <a class="nav-link" href="/interactive/">interactive </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">CV </a> </li> <li class="nav-item active"> <a class="nav-link" href="/blog/">blog </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">emdatabase: example data for electron microscopy</h1> <p class="post-meta"> Created on October 09, 2026 </p> <p class="post-tags"> <a href="/blog/2026"> <i class="fa-solid fa-calendar fa-sm"></i> 2026 </a>   ·   <a href="/blog/tag/emdatabase"> <i class="fa-solid fa-hashtag fa-sm"></i> emdatabase</a>   <a href="/blog/tag/open-source"> <i class="fa-solid fa-hashtag fa-sm"></i> open-source</a>   <a href="/blog/tag/data"> <i class="fa-solid fa-hashtag fa-sm"></i> data</a>   ·   <a href="/blog/category/software"> <i class="fa-solid fa-tag fa-sm"></i> software</a> </p> </header> <article class="post-content"> <div id="markdown-content"> <p>In scientific computing, the easiest way to share code or techniques is through a Jupyter notebook. Actually, in my experience, a notebook is the only way to get people to try your code. There are some cool (and frankly better) alternatives such as <a href="https://marimo.io/" rel="external nofollow noopener" target="_blank">Marimo</a>, but academics tend to lag behind when it comes to technology, and I don’t think Jupyter is going away anytime soon.</p> <p>So you have a cool new method and you post a notebook, but you also need to share the data that goes with it. That doesn’t sound like a problem: you can host large files on Zenodo or as a public Google Drive download. But every extra step lowers the chance that a curious PI or an experimentally focused grad student will actually get the code to run. Downloading the files, unzipping them, putting them in the right folder, changing the paths, each step is an opportunity for something to go wrong.</p> <p>We created <a href="https://github.com/electronmicroscopy/emdatabase" rel="external nofollow noopener" target="_blank">emdatabase</a> so that sharing data is as simple as sharing the notebook and running the first cell. It’s a central index of electron microscopy datasets. The files stay where they’re hosted, and <code class="language-plaintext highlighter-rouge">emdatabase</code> downloads, verifies, and caches them for you.</p> <p><a href="https://github.com/CSSFrancis" rel="external nofollow noopener" target="_blank">Carter Francis</a> started the project after we kept circling back to this problem at our biweekly <code class="language-plaintext highlighter-rouge">electronmicroscopy</code> dev meeting (reach out if you want to join!). He introduced us to the nifty package <a href="https://pypi.org/project/pooch/" rel="external nofollow noopener" target="_blank">pooch</a> and got things started with many of the <a href="https://hyperspy.org/" rel="external nofollow noopener" target="_blank">HyperSpy</a> example datasets. We have since integrated <code class="language-plaintext highlighter-rouge">emdatabase</code> into the <a href="https://github.com/electronmicroscopy" rel="external nofollow noopener" target="_blank"><code class="language-plaintext highlighter-rouge">electronmicroscopy</code></a> ecosystem alongside <a href="https://github.com/electronmicroscopy/quantem" rel="external nofollow noopener" target="_blank">quantEM</a>, and expanded it to distribute trained ML model weights as well.</p> <h2 id="using-it">Using it</h2> <p>Install it with <code class="language-plaintext highlighter-rouge">pip install em-database</code> (the import name is <code class="language-plaintext highlighter-rouge">emdatabase</code>). It’s also a dependency of quantEM, so if you have quantEM in your environment, you already have <code class="language-plaintext highlighter-rouge">emdatabase</code>.</p> <p>Each dataset is a class, and downloading one returns a local path:</p> <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">emdatabase.data</span> <span class="kn">import</span> <span class="n">BilayerWS2</span>
+<span class="kn">from</span> <span class="n">quantem.core.io.file_readers</span> <span class="kn">import</span> <span class="n">read_4dstem</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="nc">BilayerWS2</span><span class="p">().</span><span class="nf">download</span><span class="p">()</span>  <span class="c1"># fetched once, checksum-verified, then cached
+</span><span class="n">data</span> <span class="o">=</span> <span class="nf">read_4dstem</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</code></pre></div></div> <p>The path goes straight into quantEM, HyperSpy, or whatever reader you use. You can also search the index from Python with <code class="language-plaintext highlighter-rouge">emdatabase.search("4d-stem strain")</code> or <code class="language-plaintext highlighter-rouge">emdatabase.filter(technique="4D-STEM")</code>; neither touches the network, because the index ships with the package. Downloads can go to a scratch disk, or to a shared group drive so a lab downloads each file only once. In Jupyter, <code class="language-plaintext highlighter-rouge">emdatabase.browse()</code> opens an interactive browser that lists every dataset by technique and downloads one with a click.</p> <p>For a more complete set of examples, check out the <a href="https://github.com/electronmicroscopy/quantem-tutorials/blob/main/tutorials/core/em_data.ipynb" rel="external nofollow noopener" target="_blank">tutorial notebook</a>. (Widgets don’t persist in notebooks on GitHub, so you’ll have to run it to see what they actually look like.)</p> <h2 id="whats-in-it">What’s in it</h2> <p>The most important feature of <code class="language-plaintext highlighter-rouge">emdatabase</code>, and what makes it more than just a wrapper around <code class="language-plaintext highlighter-rouge">pooch</code>, is a curated source of electron microscopy data that will keep growing over time. It currently holds about two dozen datasets (4D-STEM, EELS, EBSD, Lorentz, cryo, in-situ, and simulated data), plus model weights organized by ML task. Here’s what’s we have right now; search, filter by technique, and click an entry for its metadata and the line that loads it:</p> <div data-widget="emdb-browser"></div> <script type="module" src="/assets/js/widgets/mount.js"></script> <p>The <a href="https://electronmicroscopy.github.io/emdatabase/" rel="external nofollow noopener" target="_blank">docs</a> have the same browser, always up to date, for both the <a href="https://electronmicroscopy.github.io/emdatabase/all_data.html" rel="external nofollow noopener" target="_blank">datasets</a> and the <a href="https://electronmicroscopy.github.io/emdatabase/weights.html" rel="external nofollow noopener" target="_blank">model weights</a>.</p> <h2 id="model-weights">Model weights</h2> <p>Model weights have the same problem as datasets. When you publish a new ML method, the example code has to come with the trained weights. The catch is that improved versions are often released later. If the weights are on Zenodo, this is easy to handle; every previous record is kept, so we can list all past versions along with <code class="language-plaintext highlighter-rouge">latest</code>. Google Drive and similar services are harder, because they only serve the latest upload. Our current solution is to archive each version of the weights on GitHub (which can handle files up to 100 MB), but we will need a more scalable solution if this catches on.</p> <h2 id="adding-your-data">Adding your data</h2> <p>Adding a new dataset or model weights is straightforward. Internally, each entry is a short YAML file containing a description, the source URL, a checksum and file size, the license, the techniques, and the authors. In practice, you just fill in the <a href="https://github.com/electronmicroscopy/emdatabase/issues/new?template=new_dataset.yaml" rel="external nofollow noopener" target="_blank">new-dataset issue form</a>, and a GitHub Action turns it into the YAML file and opens the pull request.</p> <p>Your data stays wherever you host it. So far we’ve tested Zenodo, Google Drive, and files in GitHub repositories, and any publicly accessible link should work. If you have a dataset that others would find useful, please add it!</p> <p>As always, reach out on the GitHub repo and open an Issue if you’re having problems, or just email me directly with any questions.</p> </div> </article> <br> <hr> <br> <h2 class="text-3xl font-semibold mb-4 mt-12">Enjoy Reading This Article?</h2> <p class="mb-2">Here are some more articles you might like to read next:</p> <ul class="list-disc pl-7 my-3 space-y-2 marker:text-[var(--global-theme-color)]"> <li class="leading-relaxed"> <a class="underline decoration-1 hover:text-[var(--global-hover-color)]" href="/blog/2026/pylorentz-co-maintainer/">PyLorentz is looking for a co-maintainer</a> </li> </ul> </div> </div> <footer class="sticky-bottom mt-5" role="contentinfo"> <div class="container"> © Copyright 2026 Arthur R. C. McCray. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with the <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. </div> </footer> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> <script type="module" src="/assets/al_search/js/search/ninja-keys.min.js"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/al_search/js/search-setup.js"></script> <script>
+// get the ninja-keys element
+const ninja = document.querySelector('ninja-keys');
+
+// add the home and posts menu items
+ninja.data = [{
+    id: "nav-about",
+    title: "about",
+    section: "Navigation",
+    handler: () => {
+      window.location.href = "/";
+    },
+  },{id: "nav-publications",
+          title: "publications",
+          description: "* denotes equal contribution.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/publications/";
+          },
+        },{id: "nav-projects",
+          title: "projects",
+          description: "Research directions and open-source software.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/projects/";
+          },
+        },{id: "nav-software",
+          title: "software",
+          description: "Open-source tools for scientific computing.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/software/";
+          },
+        },{id: "nav-interactive",
+          title: "interactive",
+          description: "Simulations and reconstructions that run live in your browser.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/interactive/";
+          },
+        },{id: "nav-cv",
+          title: "CV",
+          description: "Full CV as a PDF via the icon on the right.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/cv/";
+          },
+        },{id: "nav-blog",
+          title: "blog",
+          description: "",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/blog/";
+          },
+        },{id: "post-emdatabase-example-data-for-electron-microscopy",
+        
+          title: "emdatabase: example data for electron microscopy",
+        
+        description: "A central index for downloading electron microscopy datasets and model weights from wherever they&#39;re hosted.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/emdatabase/";
+          
+        },
+      },{id: "post-pylorentz-is-looking-for-a-co-maintainer",
+        
+          title: "PyLorentz is looking for a co-maintainer",
+        
+        description: "I&#39;m looking for someone to share and eventually take over the development of PyLorentz.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/pylorentz-co-maintainer/";
+          
+        },
+      },{id: "projects-deep-material-priors",
+          title: 'Deep material priors',
+          description: "Multimodal vision transformer foundation models for electron microscopy, with Toyota Research Institute.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/0_deep_material_priors/";
+            },},{id: "projects-deep-generative-priors-for-ptychography",
+          title: 'Deep generative priors for ptychography',
+          description: "Self-supervised neural priors make electron ptychography faster, sharper, and more robust to noise.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/1_deep_priors_ptychography/";
+            },},{id: "projects-quantitative-lorentz-tem-from-a-single-image",
+          title: 'Quantitative Lorentz TEM from a single image',
+          description: "Self-supervised and simulation-trained ML for magnetic phase imaging.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/2_single_image_ltem/";
+            },},{id: "projects-skyrmions-in-van-der-waals-magnets",
+          title: 'Skyrmions in van der Waals magnets',
+          description: "Cryogenic and in situ Lorentz TEM of topological spin textures in 2D magnets.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/3_vdw_skyrmions/";
+            },},{id: "projects-whole-pattern-fitting-for-strain-mapping",
+          title: 'Whole-pattern fitting for strain mapping',
+          description: "Fitting entire diffraction patterns for more precise 4D-STEM strain maps, with Samsung.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/4_strain_mapping/";
+            },},{id: "projects-quantem",
+          title: 'quantEM',
+          description: "Open-source Python library for quantitative electron microscopy.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/5_quantem/";
+            },},{id: "projects-pylorentz",
+          title: 'PyLorentz',
+          description: "Python package for Lorentz TEM simulation, phase reconstruction, and ML-based analysis.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/6_pylorentz/";
+            },},{
+        id: 'social-email',
+        title: 'email',
+        section: 'Socials',
+        handler: () => {
+          window.open("mailto:%61%72%74%68%75%72%6D%63%63%72%61%79%39%35@%67%6D%61%69%6C.%63%6F%6D", "_blank");
+        },
+      },{
+        id: 'social-scholar',
+        title: 'Google Scholar',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://scholar.google.com/citations?user=BV5vrGgAAAAJ", "_blank");
+        },
+      },{
+        id: 'social-github',
+        title: 'GitHub',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://github.com/arthurmccray", "_blank");
+        },
+      },{
+        id: 'social-linkedin',
+        title: 'LinkedIn',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://www.linkedin.com/in/arthur-mccray-6200a9ab", "_blank");
+        },
+      },{
+        id: 'social-orcid',
+        title: 'ORCID',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://orcid.org/0000-0001-6077-4698", "_blank");
+        },
+      },{
+        id: 'social-cv',
+        title: 'CV',
+        section: 'Socials',
+        handler: () => {
+          window.open("/assets/pdf/McCray_CV.pdf", "_blank");
+        },
+      },{
+      id: 'light-theme',
+      title: 'Change theme to light',
+      description: 'Change the theme of the site to Light',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("light");
+      },
+    },
+    {
+      id: 'dark-theme',
+      title: 'Change theme to dark',
+      description: 'Change the theme of the site to Dark',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("dark");
+      },
+    },
+    {
+      id: 'system-theme',
+      title: 'Use system default theme',
+      description: 'Change the theme of the site to System Default',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("system");
+      },
+    },];
+
+</script> <script src="/assets/al_search/js/shortcut-key.js"></script> </body> </html>

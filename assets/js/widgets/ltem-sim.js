@@ -452,6 +452,7 @@ function drawInduction(ctx, B) {
     img.data.set([rgb[0], rgb[1], rgb[2], 255], 4 * i);
   }
   ctx.putImageData(img, 0, 0);
+  return top;
 }
 
 function drawScaleBar(ctx, nm) {
@@ -484,7 +485,7 @@ function drawColorWheel(ctx, x0, y0, r, mode) {
   ctx.putImageData(img, x0 - r, y0 - r);
 }
 
-function drawArrows(ctx, m, step = 11) {
+function drawArrows(ctx, m, step = 18) {
   ctx.save();
   ctx.lineCap = "round";
   const start = Math.floor(step / 2);
@@ -571,7 +572,21 @@ function render({ model, el }) {
 
   const DEFAULT_RADIUS = { skyrmion: 60e-9, antiskyrmion: 60e-9, lattice: 30e-9, helix: 60e-9 };
   const NOISE_FREE = 5; // top of the log-dose slider
-  const state = { texture: opt("texture", "skyrmion"), arrows: false };
+  // Optional starting configuration from data-widget-config: texture, radius (nm), helicity and tilt (degrees), and arrows, e.g.
+  // {"helicity": 0, "tilt": 30, "radius": 80, "arrows": true} for a tilted Néel skyrmion. Reset returns to it while the starting
+  // texture is selected; other textures reset to their defaults.
+  const num = (k) => {
+    const v = Number(opt(k, NaN));
+    return Number.isFinite(v) ? v : null;
+  };
+  const initial = {
+    texture: opt("texture", "skyrmion"),
+    radius: num("radius") != null ? Math.max(25, Math.min(110, num("radius"))) * 1e-9 : null,
+    helicity: num("helicity") != null ? (num("helicity") * Math.PI) / 180 : null,
+    tilt: num("tilt") != null ? (Math.max(-MAX_TILT_DEG, Math.min(MAX_TILT_DEG, num("tilt"))) * Math.PI) / 180 : null,
+    arrows: Boolean(opt("arrows", false)),
+  };
+  const state = { texture: initial.texture, arrows: initial.arrows };
   function resetState() {
     Object.assign(state, {
       radius: DEFAULT_RADIUS[state.texture] || 60e-9,
@@ -582,6 +597,9 @@ function render({ model, el }) {
       cx: 0,
       cy: 0,
     });
+    if (state.texture !== initial.texture) return;
+    for (const k of ["radius", "helicity", "tilt"]) if (initial[k] != null) state[k] = initial[k];
+    state.arrows = initial.arrows;
   }
   resetState();
 
@@ -610,7 +628,7 @@ function render({ model, el }) {
       <div class="ltem-buttons">
         <button data-preset="bloch" title="γ = 90°: in-plane spins circulate around the core">Bloch</button>
         <button data-preset="neel" title="γ = 0°: in-plane spins point radially outward">Néel</button>
-        <button data-preset="reset" title="Restore the default settings for this texture">Reset</button>
+        <button data-preset="reset" title="Restore the starting settings for this texture">Reset</button>
         <label class="ltem-check"><input type="checkbox" data-k="arrows"> Arrows</label>
       </div>
     </div>
@@ -764,7 +782,22 @@ function render({ model, el }) {
       ctx.tie.fillText("Needs nonzero defocus", N / 2, N / 2);
       ctx.tie.textAlign = "start";
     } else {
-      drawInduction(ctx.tie, inductionFromPhase(tiePhase(Ip, Im, df)));
+      const B = inductionFromPhase(tiePhase(Ip, Im, df));
+      const top = drawInduction(ctx.tie, B);
+      if (state.arrows) {
+        // Same arrows as the magnetization panel, with the field scaled like the color map (strongest = 1). Fields under a third of
+        // that are dropped, so the dim background stays clear.
+        const mx = new Float64Array(N * N);
+        const my = new Float64Array(N * N);
+        for (let i = 0; i < N * N; i++) {
+          const b = Math.hypot(B.bx[i], B.by[i]);
+          const rel = Math.min(1, b / top);
+          if (rel < 1 / 3) continue;
+          mx[i] = (B.bx[i] / b) * rel;
+          my[i] = (B.by[i] / b) * rel;
+        }
+        drawArrows(ctx.tie, { mx, my });
+      }
       drawColorWheel(ctx.tie, N - 24, 24, 20, "hsv");
     }
 

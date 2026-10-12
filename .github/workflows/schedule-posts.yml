@@ -2,10 +2,10 @@ name: Publish posts scheduled for today
 
 on:
   schedule:
-    # 8:15 am Pacific every day. Cron is UTC only, so run at both 15:15 (PDT) and 16:15 (PST) UTC; the job continues only on the run
+    # 8:00 am Pacific every day. Cron is UTC only, so run at both 15:00 (PDT) and 16:00 (PST) UTC; the job continues only on the run
     # where it is 8 am in Los Angeles. GitHub can start scheduled runs late by several minutes, sometimes longer.
-    - cron: "15 15 * * *"
-    - cron: "15 16 * * *"
+    - cron: "0 15 * * *"
+    - cron: "0 16 * * *"
   workflow_dispatch:
 
 # contents: push the moved posts; actions: start the deploy (a push made with GITHUB_TOKEN does not trigger other workflows)
@@ -30,8 +30,8 @@ jobs:
           # A manual run always proceeds.
           zone=$(TZ=America/Los_Angeles date +%Z)
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            if { [ "${{ github.event.schedule }}" = "15 15 * * *" ] && [ "$zone" = "PDT" ]; } ||
-               { [ "${{ github.event.schedule }}" = "15 16 * * *" ] && [ "$zone" = "PST" ]; }; then
+            if { [ "${{ github.event.schedule }}" = "0 15 * * *" ] && [ "$zone" = "PDT" ]; } ||
+               { [ "${{ github.event.schedule }}" = "0 16 * * *" ] && [ "$zone" = "PST" ]; }; then
               echo "RUN=true" >> $GITHUB_ENV
             else
               echo "This cron is for the other offset (it is $zone now); skipping."

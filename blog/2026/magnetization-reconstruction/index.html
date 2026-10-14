@@ -1,0 +1,205 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> Reconstructing 3D magnetization from Lorentz TEM images | Arthur R. C. McCray </title> <meta name="author" content="Arthur R. C. McCray"> <meta name="description" content="Integrated induction maps can be misleading; the magnetization is the quantity of interest."> <meta name="keywords" content="electron microscopy, machine learning, vision transformers, multimodal foundation models, deep generative priors, self-supervised learning, ptychography, Lorentz TEM, 4D-STEM, inverse problems, quantEM, PyLorentz"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 930px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%F0%9F%94%AC&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://arthurmccray.github.io/blog/2026/magnetization-reconstruction/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav sticky-bottom-footer"> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> <span class="font-weight-bold">Arthur</span> R. C. McCray </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/">publications </a> </li> <li class="nav-item "> <a class="nav-link" href="/projects/">projects </a> </li> <li class="nav-item "> <a class="nav-link" href="/software/">software </a> </li> <li class="nav-item "> <a class="nav-link" href="/interactive/">interactive </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">CV </a> </li> <li class="nav-item active"> <a class="nav-link" href="/blog/">blog </a> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">Reconstructing 3D magnetization from Lorentz TEM images</h1> <p class="post-meta"> Created on October 14, 2026 </p> <p class="post-tags"> <a href="/blog/2026"> <i class="fa-solid fa-calendar fa-sm"></i> 2026 </a>   ·   <a href="/blog/tag/lorentz-tem"> <i class="fa-solid fa-hashtag fa-sm"></i> lorentz-tem</a>   <a href="/blog/tag/magnetism"> <i class="fa-solid fa-hashtag fa-sm"></i> magnetism</a>   <a href="/blog/tag/automatic-differentiation"> <i class="fa-solid fa-hashtag fa-sm"></i> automatic-differentiation</a>   ·   <a href="/blog/category/research"> <i class="fa-solid fa-tag fa-sm"></i> research</a> </p> </header> <article class="post-content"> <div id="markdown-content"> <p class="lead"><strong>Abstract:</strong> A. R. C. McCray, M. Cherukara, A. K. Petford-Long, C. Phatak, <a href="https://doi.org/10.1093/micmic/ozad067.908" rel="external nofollow noopener" target="_blank">3D Magnetization Reconstruction for Lorentz Microscopy using Differential Programming</a>, <em>Microscopy and Microanalysis</em> <strong>29</strong> (Suppl. 1), 1756–1757 (2023)</p> <p>Everyone has a project or two from their PhD that never got finished. When I moved to my postdoc, I fully expected to tie this one up at some point, but with plenty of other projects competing for my time it fell by the wayside. I still think the core idea is important and could open up a new way of characterizing magnetic materials, but so far it only exists in a conference abstract and my thesis. This post is a condensed version of that thesis section, plus where I think the project should go next.</p> <h2 id="why-induction-maps-arent-enough">Why induction maps aren’t enough</h2> <p>When studying magnetic ordering, the fundamental quantity of interest is the magnetization. It describes how the unpaired spins in the material are arranged, and it’s what couples to the lattice and to any applied stimuli. But LTEM doesn’t image the magnetization directly. The electron wave picks up a phase shift from the magnetic induction it passes through, integrated along the beam. Phase retrieval, for example with the transport-of-intensity equation, gives you that projected in-plane induction, which includes the stray fields and the demagnetizing field as well as the magnetization. These integrated induction maps can look very different from the magnetization that produced them.</p> <p>The classic example is a Néel skyrmion, which has a hedgehog-like structure with spins pointing radially inward or outward from the skyrmion core. Flat in the microscope, it produces no LTEM contrast at all. Tilt the sample and it appears as a pair of bright and dark lobes, and the reconstructed induction map has a “biskyrmion” shape that looks nothing like the actual spin texture. You can see this in the demo below:</p> <div data-widget="ltem-sim" data-widget-config='{"helicity": 0, "tilt": 30, "radius": 80, "arrows": true}'></div> <script type="module" src="/assets/js/widgets/mount.js"></script> <p>For an isolated texture, you can usually work out what you’re looking at with micromagnetic simulations and approximate magnetic parameters for your sample. Simulate a candidate magnetization, compute the LTEM images it would produce, and compare them with the experiment. That’s a large part of why I wrote <a href="/projects/6_pylorentz/">PyLorentz</a>. But this doesn’t extend well to dense skyrmion lattices, where many textures and their stray fields interact, or to 3D textures such as merged skyrmion tubes, chiral bobbers, and magnetic hopfions, which can create very similar LTEM contrast. In these cases, you need to reconstruct the magnetization directly from the experimental data.</p> <h2 id="how-magpy-works">How MagPy works</h2> <p>MagPy (magnetization reconstruction in Python) is an AD-based method I developed for reconstructing the 3D magnetization from a tilt series of LTEM images. It takes our automatic-differentiation (AD) phase reconstruction method, <a href="/projects/2_single_image_ltem/">SIPRAD</a>, one step further. Rather than stopping at the phase shift, it goes back to the magnetization that produces the phase shift, and in turn the LTEM images.</p> <p>Starting from a random magnetization, MagPy simulates the phase shift at each tilt angle in the input tableau, computes the LTEM images those phases would produce, and compares them with the measured images using the mean-squared error. A total-variation term on the magnetization acts like an exchange energy and pushes it toward a ferromagnetically ordered state. Because every step of the forward model is differentiable, the loss can be backpropagated all the way to the magnetization. Unlike conventional tomography, which needs only one tilt axis, this kind of vector tomography requires tilting the sample about two different axes to fully determine the magnetization.</p> <div class="row justify-content-sm-center"> <div class="col-sm-12 mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/blog/magpy_overview-480.webp 480w,/assets/img/blog/magpy_overview-800.webp 800w,/assets/img/blog/magpy_overview-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/blog/magpy_overview.png" class="img-fluid rounded fig-white" width="100%" height="auto" data-zoomable="" loading="lazy" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> The MagPy algorithm. Inputs are in grey, the forward model in blue, and the loss in orange. The loss is backpropagated through the forward model to update the magnetization <b>M</b>. </div> <p>There are two key differences from SIPRAD: MagPy learns the magnetization directly rather than through a deep image prior, and it needs a forward model for the phase shift itself, run once per tilt angle at every iteration.</p> <p>That phase calculation is what makes this challenging. There are two methods for computing the phase shift from a magnetization, and neither is ideal here.<sup id="fnref:inr"><a href="#fn:inr" class="footnote" rel="footnote" role="doc-noteref">1</a></sup> The Mansuripur algorithm is fast but assumes a flat film with magnetization that’s uniform along the beam, so it can’t handle tilted 3D textures. The linear superposition method we developed for PyLorentz is accurate for any sample and tilt, but far too slow to run thousands of times. So I used a compromise, which I called Mansuripur3D. You rotate the 3D magnetization in real space, sum it along the beam direction, and pass the flattened result to the Mansuripur algorithm. It’s an approximation, but for a tilted hopfion, its simulated image was more than 20× closer to the linear superposition result than the standard Mansuripur algorithm’s. It’s also fast: 1,000 iterations on a five-image tableau take about 21 seconds, compared with about 64 minutes using linear superposition. We were careful not to commit any inverse crimes, all of the <em>input</em> images below were simulated with linear superposition, so they aren’t approximated.</p> <h2 id="a-single-néel-skyrmion">A single Néel skyrmion</h2> <p>As a first test, I simulated a Néel skyrmion in MuMax3 and used it to simulate five LTEM images at different orientations. MagPy reconstructs the magnetization nearly perfectly.</p> <div class="row justify-content-sm-center"> <div class="col-sm-12 mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/blog/magpy_neel_skyrmion-480.webp 480w,/assets/img/blog/magpy_neel_skyrmion-800.webp 800w,/assets/img/blog/magpy_neel_skyrmion-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/blog/magpy_neel_skyrmion.jpg" class="img-fluid rounded fig-white" width="100%" height="auto" data-zoomable="" loading="lazy" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> (a) True magnetization of a Néel skyrmion. (b) Its integrated induction map when tilted by 30°, as phase retrieval would provide it, showing the "biskyrmion" shape. (c) The five-image tilt tableau used as input. (d) The MagPy reconstruction. (e) The x-component of the magnetization along the dashed line in (d). (f) Images simulated from the reconstruction, which match the input data. </div> <p>What surprised me was that MagPy consistently got the skyrmion’s <em>chirality</em> right, whether the spins point inward or outward. Chirality is very hard to determine with LTEM, because the two chiralities produce nearly identical images that differ only slightly in where the intensity peaks. (With real experimental data, I don’t think it’s possible, because of deformations and stray fields, and I wouldn’t be surprised if MagPy can’t do it either.) That MagPy recovered the chirality correctly, even from noisy data, is a good sign both for its sensitivity and that it doesn’t seem to get stuck in local minima.</p> <div class="row justify-content-sm-center"> <div class="col-sm-12 mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/blog/magpy_chirality-480.webp 480w,/assets/img/blog/magpy_chirality-800.webp 800w,/assets/img/blog/magpy_chirality-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/blog/magpy_chirality.jpg" class="img-fluid rounded fig-white" width="100%" height="auto" data-zoomable="" loading="lazy" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> (a, b) Outward- and inward-chirality Néel skyrmions. (c, d) Their simulated images at a 30° tilt, and (e) the difference between them. (f, g) MagPy recovers the correct chirality for both. (h–l) The same with noise added. </div> <h2 id="complex-and-3d-spin-textures">Complex and 3D spin textures</h2> <p>Reconstructing the magnetization is most useful when induction maps aren’t easy to interpret. For a dense Néel skyrmion lattice, for example, the induction map of the tilted sample is chaotic and tells you little about the spin textures. This reconstruction used nine input images from a 30° tilt series, similar to those used in X-ray laminography. The reconstruction looks nearly identical to the ground truth, both in plan view and in cross section.</p> <div class="row justify-content-sm-center"> <div class="col-sm-12 mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/blog/magpy_lattice-480.webp 480w,/assets/img/blog/magpy_lattice-800.webp 800w,/assets/img/blog/magpy_lattice-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/blog/magpy_lattice.jpg" class="img-fluid rounded fig-white" width="100%" height="auto" data-zoomable="" loading="lazy" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> (a) True magnetization of a dense Néel skyrmion lattice, averaged through the thickness, and (b) a cross section along the dashed line. (c) The induction map when tilted 30° about x. (d) The nine-image tilt tableau. (e, f) The MagPy reconstruction. </div> <p>The most exciting application would be identifying 3D topological spin textures. The 3D analogue of a skyrmion is the magnetic hopfion, which looks like a torus of spiraling magnetization. MagPy recovers a hopfion from simulated data with the right chirality and Hopf index. It isn’t a perfect match between the simulation and reconstruction, the torus core is too small, and the top and bottom surfaces are more in-plane than they should be. But it’s impressive given that the maximum tilt angle is only 30°, which doesn’t provide much information along the film thickness. Imaging at higher tilts could help, but in a continuous film, that sends the beam through stray fields from regions outside the field of view, which the model can’t account for.</p> <div class="row justify-content-sm-center"> <div class="col-sm-12 mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/blog/magpy_hopfion-480.webp 480w,/assets/img/blog/magpy_hopfion-800.webp 800w,/assets/img/blog/magpy_hopfion-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/blog/magpy_hopfion.jpg" class="img-fluid rounded fig-white" width="100%" height="auto" data-zoomable="" loading="lazy" onerror="this.onerror=null; document.querySelectorAll('.responsive-img-srcset').forEach(function (n) { n.remove(); });"> </picture> </figure> </div> </div> <div class="caption"> (a) Slices through a magnetic hopfion, (b) its central slice in plan view, and (c) a cross section along the dashed line. (d) The nine-image tilt tableau used as input. (e–g) The same views of the MagPy reconstruction. </div> <p>Most importantly, MagPy gets the qualitative features right and clearly identifies the hopfion as a 3D topological spin texture.</p> <h2 id="whats-next">What’s next</h2> <p>This project unfortunately stalled after I finished my PhD. I couldn’t get experimental data at LBL or Stanford, in large part because not many people there were making magnetic samples or studying spin textures. A student in CD Phatak’s group at Argonne is now continuing the work, and we’re planning several changes that should make it much better:</p> <ul> <li> <strong>A better representation of the magnetization.</strong> MagPy currently learns a voxel grid directly. Implicit neural representations, or tensor decompositions like k-planes, would be a significant improvement. We could sample the magnetization at any point, and therefore at any orientation, without interpolation, so we could use the Mansuripur algorithm without approximations.</li> <li> <strong>More physics in the loss.</strong> Right now, total variation is the only physical constraint. Adding other energy terms, such as the Zeeman, anisotropy, and Dzyaloshinskii–Moriya (DMI) energies, should help the reconstructions converge to physically realistic states. Since material parameters are rarely known precisely, it would be better to allow a range of values than to fix them. The dipolar energy is the tricky one. It’s very expensive to compute, so we’ll likely skip it.</li> <li> <strong>Electrostatic phase and imaging parameters.</strong> Including the electrostatic phase shift would let MagPy handle patterned samples, and optimizing the microscope and sample parameters alongside the magnetization has helped similar AD-based methods.</li> </ul> <p>If you’re interested in any of this, or have a sample you’d like to try it on, please <a href="mailto:arthurmccray95@gmail.com">get in touch</a>!</p> <div class="footnotes" role="doc-endnotes"> <ol> <li id="fn:inr"> <p>An implicit neural representation of the magnetization would actually solve this problem, because it can be sampled at any orientation without interpolation, so the standard Mansuripur algorithm would work. <a href="#fnref:inr" class="reversefootnote" role="doc-backlink">↩</a></p> </li> </ol> </div> </div> </article> <br> <hr> <br> <h2 class="text-3xl font-semibold mb-4 mt-12">Enjoy Reading This Article?</h2> <p class="mb-2">Here are some more articles you might like to read next:</p> <ul class="list-disc pl-7 my-3 space-y-2 marker:text-[var(--global-theme-color)]"> <li class="leading-relaxed"> <a class="underline decoration-1 hover:text-[var(--global-hover-color)]" href="/blog/2026/emdatabase/">emdatabase: example data for electron microscopy</a> </li> <li class="leading-relaxed"> <a class="underline decoration-1 hover:text-[var(--global-hover-color)]" href="/blog/2026/pylorentz-co-maintainer/">PyLorentz is looking for a co-maintainer</a> </li> </ul> </div> </div> <footer class="sticky-bottom mt-5" role="contentinfo"> <div class="container"> © Copyright 2026 Arthur R. C. McCray. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with the <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. </div> </footer> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> <script type="module" src="/assets/al_search/js/search/ninja-keys.min.js"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/al_search/js/search-setup.js"></script> <script>
+// get the ninja-keys element
+const ninja = document.querySelector('ninja-keys');
+
+// add the home and posts menu items
+ninja.data = [{
+    id: "nav-about",
+    title: "about",
+    section: "Navigation",
+    handler: () => {
+      window.location.href = "/";
+    },
+  },{id: "nav-publications",
+          title: "publications",
+          description: "* denotes equal contribution.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/publications/";
+          },
+        },{id: "nav-projects",
+          title: "projects",
+          description: "Research directions and open-source software.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/projects/";
+          },
+        },{id: "nav-software",
+          title: "software",
+          description: "Open-source tools for scientific computing.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/software/";
+          },
+        },{id: "nav-interactive",
+          title: "interactive",
+          description: "Simulations and reconstructions that run live in your browser.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/interactive/";
+          },
+        },{id: "nav-cv",
+          title: "CV",
+          description: "Full CV as a PDF via the icon on the right.",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/cv/";
+          },
+        },{id: "nav-blog",
+          title: "blog",
+          description: "",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/blog/";
+          },
+        },{id: "post-reconstructing-3d-magnetization-from-lorentz-tem-images",
+        
+          title: "Reconstructing 3D magnetization from Lorentz TEM images",
+        
+        description: "Integrated induction maps can be misleading; the magnetization is the quantity of interest.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/magnetization-reconstruction/";
+          
+        },
+      },{id: "post-emdatabase-example-data-for-electron-microscopy",
+        
+          title: "emdatabase: example data for electron microscopy",
+        
+        description: "A central index for downloading electron microscopy datasets and model weights from wherever they&#39;re hosted.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/emdatabase/";
+          
+        },
+      },{id: "post-pylorentz-is-looking-for-a-co-maintainer",
+        
+          title: "PyLorentz is looking for a co-maintainer",
+        
+        description: "I&#39;m looking for someone to share and eventually take over the development of PyLorentz.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/pylorentz-co-maintainer/";
+          
+        },
+      },{id: "projects-deep-material-priors",
+          title: 'Deep material priors',
+          description: "Multimodal vision transformer foundation models for electron microscopy, with Toyota Research Institute.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/0_deep_material_priors/";
+            },},{id: "projects-deep-generative-priors-for-ptychography",
+          title: 'Deep generative priors for ptychography',
+          description: "Self-supervised neural priors make electron ptychography faster, sharper, and more robust to noise.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/1_deep_priors_ptychography/";
+            },},{id: "projects-quantitative-lorentz-tem-from-a-single-image",
+          title: 'Quantitative Lorentz TEM from a single image',
+          description: "Self-supervised and simulation-trained ML for magnetic phase imaging.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/2_single_image_ltem/";
+            },},{id: "projects-skyrmions-in-van-der-waals-magnets",
+          title: 'Skyrmions in van der Waals magnets',
+          description: "Cryogenic and in situ Lorentz TEM of topological spin textures in 2D magnets.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/3_vdw_skyrmions/";
+            },},{id: "projects-whole-pattern-fitting-for-strain-mapping",
+          title: 'Whole-pattern fitting for strain mapping',
+          description: "Fitting entire diffraction patterns for more precise 4D-STEM strain maps, with Samsung.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/4_strain_mapping/";
+            },},{id: "projects-quantem",
+          title: 'quantEM',
+          description: "Open-source Python library for quantitative electron microscopy.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/5_quantem/";
+            },},{id: "projects-pylorentz",
+          title: 'PyLorentz',
+          description: "Python package for Lorentz TEM simulation, phase reconstruction, and ML-based analysis.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/6_pylorentz/";
+            },},{
+        id: 'social-email',
+        title: 'email',
+        section: 'Socials',
+        handler: () => {
+          window.open("mailto:%61%72%74%68%75%72%6D%63%63%72%61%79%39%35@%67%6D%61%69%6C.%63%6F%6D", "_blank");
+        },
+      },{
+        id: 'social-scholar',
+        title: 'Google Scholar',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://scholar.google.com/citations?user=BV5vrGgAAAAJ", "_blank");
+        },
+      },{
+        id: 'social-github',
+        title: 'GitHub',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://github.com/arthurmccray", "_blank");
+        },
+      },{
+        id: 'social-linkedin',
+        title: 'LinkedIn',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://www.linkedin.com/in/arthur-mccray-6200a9ab", "_blank");
+        },
+      },{
+        id: 'social-orcid',
+        title: 'ORCID',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://orcid.org/0000-0001-6077-4698", "_blank");
+        },
+      },{
+        id: 'social-cv',
+        title: 'CV',
+        section: 'Socials',
+        handler: () => {
+          window.open("/assets/pdf/McCray_CV.pdf", "_blank");
+        },
+      },{
+      id: 'light-theme',
+      title: 'Change theme to light',
+      description: 'Change the theme of the site to Light',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("light");
+      },
+    },
+    {
+      id: 'dark-theme',
+      title: 'Change theme to dark',
+      description: 'Change the theme of the site to Dark',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("dark");
+      },
+    },
+    {
+      id: 'system-theme',
+      title: 'Use system default theme',
+      description: 'Change the theme of the site to System Default',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("system");
+      },
+    },];
+
+</script> <script src="/assets/al_search/js/shortcut-key.js"></script> </body> </html>

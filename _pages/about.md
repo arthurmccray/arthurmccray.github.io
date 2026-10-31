@@ -28,7 +28,7 @@ latest_posts:
 
 I'm a research scientist working at the intersection of **machine learning and electron microscopy**. I build self-supervised and
 physics-informed methods for inverse problems in scientific imaging, including deep generative priors, implicit neural representations, and
-differentiable forward models, and increasingly large pretrained models for materials data. Then I ship them as open-source tools that other
+differentiable forward models, and increasingly large pretrained models for materials data. I package my research as open-source tools that other
 microscopists can use.
 
 **Right now** I'm building [deep material priors]({{ '/projects/0_deep_material_priors/' | relative_url }}): **multimodal vision
